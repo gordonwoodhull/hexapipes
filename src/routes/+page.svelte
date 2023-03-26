@@ -11,7 +11,7 @@
 </script>
 
 <svelte:head>
-	<title>Pipes puzzles</title>
+	<title>Penrose pipes puzzle experiment</title>
 </svelte:head>
 
 <div class="container">
