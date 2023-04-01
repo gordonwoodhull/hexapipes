@@ -125,6 +125,6 @@
 
 <style>
 	.pipe path {
-		transition: d 100ms;
+		transition: d 1000ms;
 	}
 </style>

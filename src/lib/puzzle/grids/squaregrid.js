@@ -1,3 +1,5 @@
+import {rotateArray} from '../utils'
+
 const EAST = 1;
 const NORTH = 2;
 const WEST = 4;
@@ -222,7 +224,8 @@ export class SquareGrid {
 	 */
 	getDirections(tile, rotations = 0) {
 		const rotated = this.rotate(tile, rotations);
-		return this.DIRECTIONS.filter((direction) => (direction & rotated) > 0);
+		const directions = rotateArray(this.DIRECTIONS, rotations);
+		return directions.filter((direction) => (direction & rotated) > 0);
 	}
 
 	/**

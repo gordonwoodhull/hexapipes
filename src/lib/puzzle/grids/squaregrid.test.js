@@ -51,6 +51,20 @@ describe('Test tile rotations', () => {
 		expect(grid.rotate(rotated, -3)).toBe(10);
 		expect(grid.rotate(rotated, -4)).toBe(5);
 	});
+
+	it('Return arm directions in original order', () => {
+		expect(grid.getDirections(grid.T1, 0)).toStrictEqual([1]);
+		expect(grid.getDirections(grid.T1, 1)).toStrictEqual([8]);
+		expect(grid.getDirections(grid.T1, -1)).toStrictEqual([2]);
+
+		expect(grid.getDirections(grid.T3, 0)).toStrictEqual([1, 2, 4]);
+		expect(grid.getDirections(grid.T3, 1)).toStrictEqual([8, 1, 2]);
+		expect(grid.getDirections(grid.T3, -1)).toStrictEqual([2, 4, 8]);
+		expect(grid.getDirections(grid.T3, 6)).toStrictEqual([1, 2, 8]);
+		expect(grid.getDirections(grid.T3, 9)).toStrictEqual([8, 16, 1]);
+		expect(grid.getDirections(grid.T3, -13)).toStrictEqual([2, 4, 16]);
+	});
+
 });
 
 describe('Test get directions', () => {

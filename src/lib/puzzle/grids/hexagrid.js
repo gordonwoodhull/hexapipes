@@ -1,3 +1,5 @@
+import {rotateArray} from '../utils';
+
 const EAST = 1;
 const NORTHEAST = 2;
 const NORTHWEST = 4;
@@ -357,13 +359,7 @@ export class HexaGrid {
 	 */
 	getDirections(tile, rotations = 0) {
 		const rotated = this.rotate(tile, rotations);
-		let directions = this.DIRECTIONS;
-		rotations = rotations % directions.length;
-		if (rotations < 0) {
-			directions = [...directions.slice(rotations), ...directions.slice(0, rotations)]
-		} else if (rotations > 0) {
-			directions = [...directions.slice(-rotations), ...directions.slice(0, -rotations)]
-		}
+		const directions = rotateArray(this.DIRECTIONS, rotations);
 		return directions.filter((direction) => (direction & rotated) > 0);
 	}
 
