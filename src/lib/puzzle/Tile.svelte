@@ -28,20 +28,25 @@
 		});
 	}
 
-	const myDirections = game.grid.getDirections($state.tile);
-
-	const deltas = myDirections.map((direction) => game.grid.XY_DELTAS.get(direction) || [0, 0]);
-	let angle = game.grid.getTileAngle($state.tile);
-
 	const outlineWidth = game.grid.STROKE_WIDTH * 2 + game.grid.PIPE_WIDTH;
 	const pipeWidth = game.grid.PIPE_WIDTH;
 	const pipeLength = game.grid.PIPE_LENGTH;
+	let angle = game.grid.getTileAngle($state.tile);
+	/** @type {String} i*/
+	let path;
+	/** @type {Boolean} i*/
+	let isSink;
 
-	let path = `M 0 0`;
-	for (let [dx, dy] of deltas) {
-		path += ` l ${pipeLength * dx} ${-pipeLength * dy} L 0 0`;
+	$: {
+		const myDirections = game.grid.getDirections($state.tile, $state.rotations);
+		const deltas = myDirections.map((direction) => game.grid.XY_DELTAS.get(direction) || [0, 0]);
+
+		path = `M 0 0`;
+		for (let [dx, dy] of deltas) {
+			path += ` l ${pipeLength * dx} ${-pipeLength * dy} L 0 0`;
+		}
+		isSink = myDirections.length === 1;
 	}
-	const isSink = myDirections.length === 1;
 
 	/**
 	 * Choose tile background color
@@ -64,7 +69,7 @@
 	<path d={game.grid.tilePath} stroke="#aaa" stroke-width="0.02" fill={bgColor} />
 
 	<!-- Pipe shape -->
-	<g class="pipe" style="transform:rotate({game.grid.ANGLE_DEG * $state.rotations}deg)">
+	<g class="pipe">
 		<!-- Pipe outline -->
 		<path
 			d={path}
@@ -119,7 +124,7 @@
 </g>
 
 <style>
-	.pipe {
-		transition: transform 100ms;
+	.pipe path {
+		transition: d 100ms;
 	}
 </style>

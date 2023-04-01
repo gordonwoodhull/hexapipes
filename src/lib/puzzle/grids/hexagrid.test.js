@@ -67,6 +67,19 @@ describe('Test tile rotations', () => {
 		expect(grid.rotate(rotated, -1)).toBe(18);
 		expect(grid.rotate(rotated, -6)).toBe(9);
 	});
+
+	it('Return arm directions in original order', () => {
+		expect(grid.getDirections(grid.T1, 0)).toStrictEqual([1]);
+		expect(grid.getDirections(grid.T1, 1)).toStrictEqual([32]);
+		expect(grid.getDirections(grid.T1, -1)).toStrictEqual([2]);
+
+		expect(grid.getDirections(grid.T3y, 0)).toStrictEqual([1, 2, 8]);
+		expect(grid.getDirections(grid.T3y, 1)).toStrictEqual([32, 1, 4]);
+		expect(grid.getDirections(grid.T3y, -1)).toStrictEqual([2, 4, 16]);
+		expect(grid.getDirections(grid.T3y, 6)).toStrictEqual([1, 2, 8]);
+		expect(grid.getDirections(grid.T3y, 9)).toStrictEqual([8, 16, 1]);
+		expect(grid.getDirections(grid.T3y, -13)).toStrictEqual([2, 4, 16]);
+	});
 });
 
 describe('Test making a cell empty', () => {

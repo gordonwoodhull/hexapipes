@@ -357,7 +357,14 @@ export class HexaGrid {
 	 */
 	getDirections(tile, rotations = 0) {
 		const rotated = this.rotate(tile, rotations);
-		return this.DIRECTIONS.filter((direction) => (direction & rotated) > 0);
+		let directions = this.DIRECTIONS;
+		rotations = rotations % directions.length;
+		if (rotations < 0) {
+			directions = [...directions.slice(rotations), ...directions.slice(0, rotations)]
+		} else if (rotations > 0) {
+			directions = [...directions.slice(-rotations), ...directions.slice(0, -rotations)]
+		}
+		return directions.filter((direction) => (direction & rotated) > 0);
 	}
 
 	/**
