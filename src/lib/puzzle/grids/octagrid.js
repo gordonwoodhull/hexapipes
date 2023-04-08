@@ -331,6 +331,29 @@ export class OctaGrid {
 	}
 
 	/**
+	 * Get angle to rotate the entire tile
+	 * @param {Number} index
+	 * @returns
+	 */
+	getTileAngle(index) {
+		return 0;
+	}
+
+	/**
+	 * @param {Number} index
+	 */
+	getSkew(index) {
+		return 0;
+	}
+
+	/**
+	 * @param {Number} index
+	 */
+	getYScale(index) {
+		return 1;
+	}
+
+	/**
 	 *
 	 * @param {Number} tile
 	 * @param {Number} rotations
