@@ -73,7 +73,7 @@ export class CubesTiling {
 				this.emptyCells.add(index);
 			}
 		});
-		this.total = width * height;
+		this.total = width * height * 3;
 
 		this.XMIN = -0.6 - (wrap ? 1 : 0);
 		this.XMAX = width - 0.4 + (wrap ? 1 : 0);
@@ -170,8 +170,9 @@ export class CubesTiling {
 		let neighbour = -1;
 
 		const [dxs, dy, rh] = this.#XY_DELTA_RHOMB.get(rhomb)?.get(direction) || [0, 0, 0];
-		r -= dy;
-		c += dxs[r % 2];
+		const rpar = r % 2;
+		r += dy;
+		c += dxs[rpar];
 		if (this.wrap) {
 			if (r == -1) {
 				r = this.height - 1;
@@ -190,7 +191,7 @@ export class CubesTiling {
 		} else if (c < 0 || c >= this.width) {
 			neighbour = -1;
 		} else {
-			neighbour = (this.width * r + c) + rh;
+			neighbour = (this.width * r + c) * 3 + rh;
 		}
 		const empty = neighbour === -1 || this.emptyCells.has(neighbour);
 		return { neighbour, empty };
@@ -321,7 +322,7 @@ export class CubesTiling {
 					}
 					const x = c;
 					const y = r;
-					const key = `${Math.round(x)}_${Math.round(y)}`;
+					const key = `${Math.round(x)}_${Math.round(y)}_${b}`;
 					visibleTiles.push({
 						index,
 						x,
