@@ -29,7 +29,7 @@ export function createGrid(kind, width, height, wrap, tiles = undefined) {
 	} else if (kind === 'square') {
 		grid = new SquareGrid(width, height, wrap, tiles);
 	} else if (kind === 'cubes') {
-		grid = new CubesTiling(width, height, tiles);
+		grid = new CubesTiling(width, height, wrap, tiles);
 	} else {
 		throw `Unknown grid kind ${kind}`;
 	}

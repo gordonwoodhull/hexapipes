@@ -29,10 +29,11 @@
 	let path = game.grid.getPipesPath($state.tile, i);
 	const isSink = myDirections.length === 1;
 
-	const angle = game.grid.getAngle($state.rotations, i);
+	let angle = 0;
 	const skew = game.grid.getSkew(i);
-	const yscale = game.grid.getYScale(i);
-	const tileang = game.grid.getTileAngle(i)
+	const [xscale, yscale] = game.grid.getScale(i);
+	const [tilerot, ofsx, ofsy] = game.grid.getTileRotOffset(i);
+	const tile_transform = `translate(${ofsx}px, ${ofsy}px) rotate(${tilerot}rad) skew(${skew}rad) scale(${xscale}, ${yscale})`;
 
 	/**
 	 * Choose tile background color
@@ -46,6 +47,7 @@
 			bgColor = locked ? '#bbb' : '#ddd';
 		}
 	}
+
 	$: if ($state.hasDisconnects) {
 		strokeColor = $disconnectStrokeColor;
 		strokeWidth = game.grid.STROKE_WIDTH * $disconnectStrokeWidthScale;
@@ -56,16 +58,18 @@
 		strokeColor = '#888';
 		strokeWidth = game.grid.STROKE_WIDTH;
 	}
+	$: angle = game.grid.getAngle($state.rotations, i);
 	$: chooseBgColor($state.locked, $state.isPartOfLoop);
 	$: outlineWidth = 2 * strokeWidth + game.grid.PIPE_WIDTH;
 </script>
 
 <g class="tile" transform="translate({cx},{cy})">
 	<!-- Tile hexagon -->
-	<path d={game.grid.getTilePath(i)} stroke="#aaa" stroke-width="0.02" fill={bgColor} />
+	<path d={game.grid.getTilePath(i)} stroke="#aaa" stroke-width="0.02" fill={bgColor}
+	 style="transform: {tile_transform}"/>
 
 	<!-- Pipe shape -->
-	<g class="pipe" style="transform: rotate({tileang}) skew({skew}rad) scale(1, {yscale}rad) rotate({angle}rad)">
+	<g class="pipe" style="transform: {tile_transform} rotate({angle}rad)">
 		<!-- Pipe outline -->
 		<path
 			d={path}

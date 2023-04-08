@@ -7,10 +7,10 @@ const DIRD = 8;
 
 const YSTEP = Math.sqrt(3) / 2;
 const SQUARE = new RegularPolygonTile(4, 0, 0.5);
-const RHOMB_ANGLES = new Map([
-	[0, Math.PI / 6],
-	[1, - Math.PI / 6],
-	[2, Math.PI / 2]
+const RHOMB_ROTS_DIRS = new Map([
+	[0, [Math.PI / 6, -Math.PI / 6]],
+	[1, [- Math.PI / 6, Math.PI / 2]],
+	[2, [Math.PI / 2, -Math.PI * 5 / 6]]
 ]);
 
 export class CubesTiling {
@@ -263,12 +263,13 @@ export class CubesTiling {
 	}
 
 	/**
-	 * Get angle to rotate the entire tile
+	 * Get rotation and offset for entire tile
 	 * @param {Number} index
 	 * @returns
 	 */
-	getTileAngle(index) {
-		return RHOMB_ANGLES.get(index % 3);
+	getTileRotOffset(index) {
+		const [rot, dir] = RHOMB_ROTS_DIRS.get(index % 3);
+		return [rot, Math.cos(dir), -Math.sin(dir)];
 	}
 
 	/**
@@ -281,8 +282,8 @@ export class CubesTiling {
 	/**
 	 * @param {Number} index
 	 */
-	getYScale(index) {
-		return YSTEP;
+	getScale(index) {
+		return [1/2, YSTEP/2];
 	}
 
 	/**
@@ -302,6 +303,7 @@ export class CubesTiling {
 	getVisibleTiles(box) {
 		let rmin = Math.floor(box.ymin) - 1;
 		let rmax = Math.ceil(box.ymin + box.height) + 1;
+		console.assert(!this.wrap)
 		if (!this.wrap) {
 			rmin = Math.max(0, rmin);
 			rmax = Math.min(this.height - 1, rmax);
