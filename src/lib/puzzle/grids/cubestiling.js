@@ -1,29 +1,50 @@
 import { RegularPolygonTile } from '$lib/puzzle/grids/polygonutils';
 
-const EAST = 1;
-const NORTH = 2;
-const WEST = 4;
-const SOUTH = 8;
+const DIRA = 1;
+const DIRB = 2;
+const DIRC = 4;
+const DIRD = 8;
 
+const YSTEP = Math.sqrt(3) / 2;
 const SQUARE = new RegularPolygonTile(4, 0, 0.5);
+const RHOMB_ANGLES = new Map([
+	[0, Math.PI / 6],
+	[1, - Math.PI / 6],
+	[2, Math.PI / 2]
+]);
 
-export class SquareGrid {
-	DIRECTIONS = [EAST, NORTH, WEST, SOUTH];
-	EDGEMARK_DIRECTIONS = [NORTH, WEST];
+export class CubesTiling {
+	DIRECTIONS = [DIRA, DIRB, DIRC, DIRD];
+	EDGEMARK_DIRECTIONS = [DIRB, DIRC];
 	OPPOSITE = new Map([
-		[NORTH, SOUTH],
-		[SOUTH, NORTH],
-		[EAST, WEST],
-		[WEST, EAST]
+		[DIRB, DIRD],
+		[DIRD, DIRB],
+		[DIRA, DIRC],
+		[DIRC, DIRA]
 	]);
-	XY_DELTAS = new Map([
-		[NORTH, [0, 1]],
-		[SOUTH, [0, -1]],
-		[EAST, [1, 0]],
-		[WEST, [-1, 0]]
-	]);
+	#XY_DELTA_RHOMB = new Map([
+			[0, new Map([
+				[DIRA, [[1, 1], 0, 2]],
+				[DIRB, [[0, 0], 0, 1]],
+				[DIRC, [[0, 0], 0, 2]],
+				[DIRD, [[0, 1], 1, 1]]
+			])],
+			[1, new Map([
+				[DIRA, [[0, 1], -1, 2]],
+				[DIRB, [[-1, 0], -1, 0]],
+				[DIRC, [[0, 0], 0, 2]],
+				[DIRD, [[0, 0], 0, 0]]
+			])],
+			[2, new Map([
+				[DIRA, [[0, 0], 0, 0]],
+				[DIRB, [[0, 0], 0, 1]],
+				[DIRC, [[-1, -1], 0, 0]],
+				[DIRD, [[-1, 0], 1, 1]]
+			])],
+
+	])
 	NUM_DIRECTIONS = 4;
-	KIND = 'square';
+	KIND = 'cubes';
 	PIPE_WIDTH = 0.15;
 	STROKE_WIDTH = 0.06;
 	PIPE_LENGTH = 0.5;
@@ -77,12 +98,11 @@ export class SquareGrid {
 	}
 
 	/**
-	 * @param {Number} index
+	 * @param {Number} angle
 	 */
-	index_to_xy(index) {
-		const x = index % this.width;
-		const y = Math.round((index - x) / this.width);
-		return [x, y];
+	angle_to_rhomb(angle) {
+		/* Counter-clockwise from lower right of "right side up" cube */
+		return (Math.floor((angle + Math.PI/2) * 3 / (2 * Math.PI)) + 3) % 3;
 	}
 
 	/**
@@ -91,16 +111,50 @@ export class SquareGrid {
 	 * If the point is over empty space then tileIndex is -1
 	 * @param {Number} x
 	 * @param {Number} y
-	 * @returns {{index: Number, x:Number, y: Number}}
+	 * @returns {{index: Number, x:Number, y: Number, rh: Number}}
 	 */
 	which_tile_at(x, y) {
-		const x0 = Math.round(x);
-		const y0 = Math.round(y);
-		let index = this.rc_to_index(y0, x0);
-		if (this.emptyCells.has(index)) {
-			index = -1;
+		const r = y / YSTEP;
+		const r0 = Math.round(r);
+		const c0 = Math.round(x - (r0 % 2 === 0 ? 0 : 0.5));
+		const x0 = c0 + (r0 % 2 === 0 ? 0.0 : 0.5);
+		const y0 = r0 * YSTEP;
+		const distance0 = Math.sqrt((x - x0) ** 2 + (y - y0) ** 2);
+		const rhomb0 = this.angle_to_rhomb(Math.atan2(y - y0, x - x0));
+		let index = this.rcb_to_index(y0, x0, rhomb0);
+		if (distance0 <= 0.5) {
+			return {
+				index: this.rcb_to_index(r0, c0, rhomb0),
+				x: x0,
+				y: y0,
+				rh: rhomb0
+			};
+		} else {
+			let r1 = Math.floor(r);
+			if (r1 === r0) {
+				r1 = Math.ceil(r);
+			}
+			const c1 = Math.round(x - (r1 % 2 === 0 ? 0 : 0.5));
+			const x1 = c1 + (r1 % 2 === 0 ? 0.0 : 0.5);
+			const y1 = r1 * YSTEP;
+			const distance1 = Math.sqrt((x - x1) ** 2 + (y - y1) ** 2);
+			const rhomb1 = this.angle_to_rhomb(Math.atan2(y - y1, x - x1));
+			if (distance0 < distance1) {
+				return {
+					index: this.rcb_to_index(r0, c0, rhomb0),
+					x: x0,
+					y: y0,
+					rh: rhomb0
+				};
+			} else {
+				return {
+					index: this.rcb_to_index(r1, c1, rhomb1),
+					x: x1,
+					y: y1,
+					rh: rhomb1
+				};
+			}
 		}
-		return { index, x: x0, y: y0 };
 	}
 
 	/**
@@ -109,25 +163,47 @@ export class SquareGrid {
 	 * @returns {{neighbour: Number, empty: boolean}} - neighbour index, is the neighbour an empty cell or outside the board
 	 */
 	find_neighbour(index, direction) {
-		let c = index % this.width;
-		let r = (index - c) / this.width;
+		const rhomb = index % 3;
+		const cubei = Math.floor(index/3);
+		let c = cubei % this.width;
+		let r = (cubei - c) / this.width;
 		let neighbour = -1;
 
-		const [dc, dr] = this.XY_DELTAS.get(direction) || [0, 0];
-		r -= dr;
-		c += dc;
-		neighbour = this.rc_to_index(r, c);
+		const [dxs, dy, rh] = this.#XY_DELTA_RHOMB.get(rhomb)?.get(direction) || [0, 0, 0];
+		r -= dy;
+		c += dxs[r % 2];
+		if (this.wrap) {
+			if (r == -1) {
+				r = this.height - 1;
+				c += 1;
+			}
+			if (r == this.height) {
+				r = 0;
+				c -= 1 - (this.height % 2);
+			}
+			if (c < 0 || c === this.width) {
+				c = (c + this.width) % this.width;
+			}
+		}
+		if (r < 0 || r >= this.height) {
+			neighbour = -1;
+		} else if (c < 0 || c >= this.width) {
+			neighbour = -1;
+		} else {
+			neighbour = (this.width * r + c) + rh;
+		}
 		const empty = neighbour === -1 || this.emptyCells.has(neighbour);
 		return { neighbour, empty };
 	}
 
 	/**
-	 * Get index of tile located at row r column c
+	 * Get index of tile located at row r column c rhomb b
 	 * @param {Number} r
 	 * @param {Number} c
+	 * @param {Number} b
 	 * @returns {Number}
 	 */
-	rc_to_index(r, c) {
+	rcb_to_index(r, c, b) {
 		if (this.wrap) {
 			r = r % this.height;
 			if (r < 0) {
@@ -144,7 +220,7 @@ export class SquareGrid {
 				return -1;
 			}
 		}
-		return this.width * r + c;
+		return (this.width * r + c) * 3 + b;
 	}
 
 	/**
@@ -168,10 +244,10 @@ export class SquareGrid {
 	 * Compute tile orientation after a number of rotations
 	 * @param {Number} tile
 	 * @param {Number} rotations
-	 * @param {Number} index - index of tile, not used here
+	 * @param {Number} index - index of tile
 	 * @returns
 	 */
-	rotate(tile, rotations, index = 0) {
+	rotate(tile, rotations, index) {
 		return SQUARE.rotate(tile, rotations);
 	}
 
@@ -191,21 +267,21 @@ export class SquareGrid {
 	 * @returns
 	 */
 	getTileAngle(index) {
-		return 0;
+		return RHOMB_ANGLES.get(index % 3);
 	}
 
 	/**
 	 * @param {Number} index
 	 */
 	getSkew(index) {
-		return 0;
+		return Math.PI / 6;
 	}
 
 	/**
 	 * @param {Number} index
 	 */
 	getYScale(index) {
-		return 1;
+		return YSTEP;
 	}
 
 	/**
@@ -238,19 +314,22 @@ export class SquareGrid {
 		const visibleTiles = [];
 		for (let r = rmin; r <= rmax; r++) {
 			for (let c = cmin; c <= cmax; c++) {
-				const index = this.rc_to_index(r, c);
-				if (index === -1) {
-					continue;
+				for (let b = 0; b < 3; ++b) {
+					const index = this.rcb_to_index(r, c, b);
+					if (index === -1) {
+						continue;
+					}
+					const x = c;
+					const y = r;
+					const key = `${Math.round(x)}_${Math.round(y)}`;
+					visibleTiles.push({
+						index,
+						x,
+						y,
+						b,
+						key
+					});
 				}
-				const x = c;
-				const y = r;
-				const key = `${Math.round(x)}_${Math.round(y)}`;
-				visibleTiles.push({
-					index,
-					x,
-					y,
-					key
-				});
 			}
 		}
 		return visibleTiles;

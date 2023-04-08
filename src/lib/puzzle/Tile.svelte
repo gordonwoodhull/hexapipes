@@ -25,6 +25,11 @@
 	let path = game.grid.getPipesPath($state.tile, i);
 	const isSink = myDirections.length === 1;
 
+	const angle = game.grid.getAngle($state.rotations, i);
+	const skew = game.grid.getSkew(i);
+	const yscale = game.grid.getYScale(i);
+	const tileang = game.grid.getTileAngle(i)
+
 	/**
 	 * Choose tile background color
 	 * @param {Boolean} locked
@@ -46,7 +51,7 @@
 	<path d={game.grid.getTilePath(i)} stroke="#aaa" stroke-width="0.02" fill={bgColor} />
 
 	<!-- Pipe shape -->
-	<g class="pipe" style="transform:rotate({game.grid.getAngle($state.rotations, i)}rad)">
+	<g class="pipe" style="transform: rotate({tileang}) skew({skew}rad) scale(1, {yscale}rad) rotate({angle}rad)">
 		<!-- Pipe outline -->
 		<path
 			d={path}
