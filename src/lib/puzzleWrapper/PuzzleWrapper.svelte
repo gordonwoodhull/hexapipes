@@ -178,7 +178,7 @@
 			avoidStraights = Math.random() * 0.5 + 0.25; // 0.25 to 0.75
 		}
 		const gen = new Generator(grid);
-		tiles = gen.generate(branchingAmount, avoidObvious, avoidStraights);
+		tiles = gen.generate(branchingAmount, avoidObvious, avoidStraights, 'whatever');
 		genId += 1;
 		window.localStorage.setItem(instanceStoreName, JSON.stringify({ tiles: tiles }));
 	}

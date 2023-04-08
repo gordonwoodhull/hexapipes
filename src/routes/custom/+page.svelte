@@ -42,6 +42,7 @@
 		grid = createGrid(gridKind, width, height, wrap);
 		id += 1;
 		const gen = new Generator(grid);
+		debugger;
 		try {
 			tiles = gen.generate(branchingAmount, avoidObvious, avoidStraights, solutionsNumber);
 			errorMessage = '';
