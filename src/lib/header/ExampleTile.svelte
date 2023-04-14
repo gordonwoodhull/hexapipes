@@ -14,14 +14,21 @@
 
 	let path = grid.getPipesPath(tile, i);
 	const isSink = grid.getDirections(tile, 0, i).length === 1;
+
+	const skew = grid.getSkew(i);
+	const [xscale, yscale] = grid.getScale(i);
+	const [tilerot, ofsx, ofsy] = grid.getTileRotOffset(i);
+	const tile_transform = `translate(${ofsx}px, ${ofsy}px) rotate(${tilerot}rad) skew(${skew}rad) scale(${xscale}, ${yscale})`;
+
 </script>
 
 <g class="tile" transform="translate({cx},{cy})">
 	<!-- Tile background -->
-	<path d={grid.getTilePath(i)} stroke="#aaa" stroke-width="0.02" fill={bgColor} />
+	<path d={grid.getTilePath(i)} stroke="#aaa" stroke-width="0.02" 
+		fill={bgColor}  style="transform: {tile_transform}"/>
 
 	<!-- Pipe shape -->
-	<g class="pipe">
+	<g class="pipe" style="transform: {tile_transform}">
 		<!-- Pipe outline -->
 		<path
 			d={path}
