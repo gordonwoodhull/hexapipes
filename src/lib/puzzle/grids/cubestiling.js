@@ -8,9 +8,9 @@ const DIRD = 8;
 const YSTEP = Math.sqrt(3) / 2;
 const SQUARE = new RegularPolygonTile(4, 0, 0.5);
 const RHOMB_ROTS_DIRS = new Map([
-	[0, [Math.PI / 6, -Math.PI / 6]],
+	[0, [Math.PI / 2, -Math.PI / 6]],
 	[1, [- Math.PI / 6, Math.PI / 2]],
-	[2, [Math.PI / 2, -Math.PI * 5 / 6]]
+	[2, [Math.PI / 6, -Math.PI * 5 / 6]]
 ]);
 
 export class CubesTiling {
@@ -24,10 +24,10 @@ export class CubesTiling {
 	]);
 	#XY_DELTA_RHOMB = new Map([
 			[0, new Map([
-				[DIRA, [[1, 1], 0, 2]],
-				[DIRB, [[0, 0], 0, 1]],
-				[DIRC, [[0, 0], 0, 2]],
-				[DIRD, [[0, 1], 1, 1]]
+				[DIRA, [[0, 1], 1, 1]],
+				[DIRB, [[1, 1], 0, 2]],
+				[DIRC, [[0, 0], 0, 1]],
+				[DIRD, [[0, 0], 0, 2]]
 			])],
 			[1, new Map([
 				[DIRA, [[0, 1], -1, 2]],
@@ -120,7 +120,7 @@ export class CubesTiling {
 		const x0 = c0 + (r0 % 2 === 0 ? 0.0 : 0.5);
 		const y0 = r0 * YSTEP;
 		const distance0 = Math.sqrt((x - x0) ** 2 + (y - y0) ** 2);
-		const rhomb0 = this.angle_to_rhomb(Math.atan2(y - y0, x - x0));
+		const rhomb0 = this.angle_to_rhomb(Math.atan2(-y + y0, x - x0));
 		let index = this.rcb_to_index(y0, x0, rhomb0);
 		if (distance0 <= 0.5) {
 			return {
@@ -269,7 +269,7 @@ export class CubesTiling {
 	 */
 	getTileRotOffset(index) {
 		const [rot, dir] = RHOMB_ROTS_DIRS.get(index % 3);
-		return [rot, Math.cos(dir), -Math.sin(dir)];
+		return [rot, Math.cos(dir)*Math.sqrt(3)/6, -Math.sin(dir)*Math.sqrt(3)/6];
 	}
 
 	/**
@@ -283,7 +283,7 @@ export class CubesTiling {
 	 * @param {Number} index
 	 */
 	getScale(index) {
-		return [1/2, YSTEP/2];
+		return [1/Math.sqrt(3), YSTEP/Math.sqrt(3)];
 	}
 
 	/**
@@ -322,9 +322,10 @@ export class CubesTiling {
 					if (index === -1) {
 						continue;
 					}
-					const x = c;
-					const y = r;
-					const key = `${Math.round(x)}_${Math.round(y)}_${b}`;
+					const x = c + (r % 2 === 0 ? 0.0 : 0.5);
+					const y = r * YSTEP;
+					const key = `${Math.round(10 * x)}_${Math.round(10 * y)}_${b}`;
+					console.log('key',key)
 					visibleTiles.push({
 						index,
 						x,
