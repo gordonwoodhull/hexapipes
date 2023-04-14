@@ -15,10 +15,8 @@
 	let path = grid.getPipesPath(tile, i);
 	const isSink = grid.getDirections(tile, 0, i).length === 1;
 
-	const skew = grid.getSkew(i);
-	const [xscale, yscale] = grid.getScale(i);
-	const [tilerot, ofsx, ofsy] = grid.getTileRotOffset(i);
-	const tile_transform = `translate(${ofsx}px, ${ofsy}px) rotate(${tilerot}rad) skew(${skew}rad) scale(${xscale}, ${yscale})`;
+	const {scaleX, scaleY, skewX, skewY, rotate, translateX, translateY} = grid.getTileTransform(i);
+	const tile_transform = `translate(${translateX || 0}px, ${translateY || 0 }px) rotate(${rotate || 0}rad) skew(${skewX || 0}rad, ${skewY || 0}rad) scale(${scaleX}, ${scaleY})`;
 
 </script>
 

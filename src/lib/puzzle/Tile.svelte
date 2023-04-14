@@ -25,10 +25,8 @@
 	let path = game.grid.getPipesPath($state.tile, i);
 	const isSink = myDirections.length === 1;
 
-	const [skewX, skewY] = game.grid.getSkew(i);
-	const [xscale, yscale] = game.grid.getScale(i);
-	const [tilerot, ofsx, ofsy] = game.grid.getTileRotOffset(i);
-	const tile_transform = `translate(${ofsx}px, ${ofsy}px) rotate(${tilerot}rad) skew(${skewX}rad, ${skewY}rad) scale(${xscale}, ${yscale})`;
+	const {scaleX, scaleY, skewX, skewY, rotate, translateX, translateY} = game.grid.getTileTransform(i);
+	const tile_transform = `translate(${translateX || 0}px, ${translateY || 0 }px) rotate(${rotate || 0}rad) skew(${skewX || 0}rad, ${skewY || 0}rad) scale(${scaleX}, ${scaleY})`;
 
 	/**
 	 * Choose tile background color
