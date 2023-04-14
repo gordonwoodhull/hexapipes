@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { CubesTiling } from './cubestiling';
+import { CubeGrid } from './cubegrid';
 
 describe('Test making a cell empty', () => {
-	const grid = new CubesTiling(3, 3, false);
+	const grid = new CubeGrid(3, 3, false);
 	grid.makeEmpty(14);
 
 	it('Reports an empty neighbour', () => {
