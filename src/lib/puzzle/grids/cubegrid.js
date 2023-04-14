@@ -8,8 +8,8 @@ const DIRD = 8;
 const YSTEP = Math.sqrt(3) / 2;
 const SQUARE = new RegularPolygonTile(4, 0, 0.5);
 const RHOMB_ROTS_DIRS = new Map([
-	[0, [0, -Math.PI / 6]],
-	[1, [- Math.PI / 6, Math.PI / 2]],
+	[0, [- Math.PI / 2, -Math.PI / 6]],
+	[1, [5 * Math.PI / 6, Math.PI / 2]],
 	[2, [Math.PI / 6, -Math.PI * 5 / 6]]
 ]);
 
@@ -17,23 +17,23 @@ export class CubeGrid {
 	DIRECTIONS = [DIRA, DIRB, DIRC, DIRD];
 	EDGEMARK_DIRECTIONS = [DIRB, DIRC];
 	OPPOSITE = new Map([
-		[DIRB, DIRD],
-		[DIRD, DIRB],
-		[DIRA, DIRC],
-		[DIRC, DIRA]
+		[DIRA, DIRB],
+		[DIRB, DIRA],
+		[DIRC, DIRD],
+		[DIRD, DIRC]
 	]);
 	#XY_DELTA_RHOMB = new Map([
 			[0, new Map([
-				[DIRA, [[1, 1], 0, 2]],
-				[DIRB, [[0, 0], 0, 1]],
-				[DIRC, [[0, 0], 0, 2]],
-				[DIRD, [[0, 1], 1, 1]]
+				[DIRD, [[1, 1], 0, 2]],
+				[DIRA, [[0, 0], 0, 1]],
+				[DIRB, [[0, 0], 0, 2]],
+				[DIRC, [[0, 1], 1, 1]]
 			])],
 			[1, new Map([
-				[DIRA, [[0, 1], -1, 2]],
-				[DIRB, [[-1, 0], -1, 0]],
-				[DIRC, [[0, 0], 0, 2]],
-				[DIRD, [[0, 0], 0, 0]]
+				[DIRA, [[0, 0], 0, 2]],
+				[DIRB, [[0, 0], 0, 0]],
+				[DIRC, [[0, 1], -1, 2]],
+				[DIRD, [[-1, 0], -1, 0]]
 			])],
 			[2, new Map([
 				[DIRA, [[0, 0], 0, 0]],
@@ -267,7 +267,7 @@ export class CubeGrid {
 	 */
 	getTileTransform(index) {
 		let scaleX = 0, scaleY = 0;
-		if (index % 3 === 0) {
+		if (false) { // index % 3 === 0) {
 			scaleX = YSTEP/Math.sqrt(3)
 			scaleY = 1/Math.sqrt(3);
 		} else {
@@ -275,7 +275,7 @@ export class CubeGrid {
 			scaleY = YSTEP/Math.sqrt(3);
 		}
 		let skewX = 0, skewY = 0;
-		if (index % 3 == 0) {
+		if (false) { // index % 3 == 0) {
 			skewY = -Math.PI / 6;
 		} else {
 			skewX = Math.PI / 6;
@@ -290,25 +290,6 @@ export class CubeGrid {
 			translateX: Math.cos(dir)*Math.sqrt(3)/6,
 			translateY: -Math.sin(dir)*Math.sqrt(3)/6,
 		}
-	}
-	/**
-	 * Get rotation and offset for entire tile
-	 * @param {Number} index
-	 * @returns
-	 */
-	getTileRotOffset(index) {
-	}
-
-	/**
-	 * @param {Number} index
-	 */
-	getSkew(index) {
-	}
-
-	/**
-	 * @param {Number} index
-	 */
-	getScale(index) {
 	}
 
 	/**
@@ -350,7 +331,6 @@ export class CubeGrid {
 					const x = c + (r % 2 === 0 ? 0.0 : 0.5);
 					const y = r * YSTEP;
 					const key = `${Math.round(10 * x)}_${Math.round(10 * y)}_${b}`;
-					console.log('key',key)
 					visibleTiles.push({
 						index,
 						x,
