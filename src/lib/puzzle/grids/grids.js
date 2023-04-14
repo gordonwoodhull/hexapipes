@@ -66,9 +66,16 @@ export const gridInfo = {
 		url: 'cube',
 		wrap: true,
 		exampleGrid: new CubeGrid(3, 3, false),
-		// fixme when puzzle generation works
-		exampleTiles: [9, 0, 8,  0, 0, 0,  10, 6, 12,
-			0, 7, 0,  12, 0, 1,  0, 13, 0,
-			0, 6, 0,  0, 0, 0,  3, 0, 0]
+		exampleTiles: [
+			3, 1, 3,
+			10, 4, 1,
+			5, 12, 5,
+			13, 7, 11,
+			13, 7, 11,
+			8, 1, 10,
+			9, 11, 8,
+			4, 4, 2,
+			1, 9, 7
+		  ]
 	}
 };

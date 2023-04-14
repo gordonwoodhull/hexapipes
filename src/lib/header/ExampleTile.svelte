@@ -52,7 +52,7 @@
 			d={path}
 			stroke="white"
 			stroke-width={pipeWidth}
-			stroke-linejoin="round"
+			stroke-linejoin="bevel"
 			stroke-linecap="round"
 		/>
 	</g>
