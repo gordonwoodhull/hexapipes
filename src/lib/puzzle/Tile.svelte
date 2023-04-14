@@ -30,7 +30,7 @@
 	const isSink = myDirections.length === 1;
 
 	const {scaleX, scaleY, skewX, skewY, rotate, translateX, translateY} = game.grid.getTileTransform(i);
-	const tile_transform = `translate(${translateX || 0}px, ${translateY || 0 }px) rotate(${rotate || 0}rad) skew(${skewX || 0}rad, ${skewY || 0}rad) scale(${scaleX}, ${scaleY})`;
+	const tile_transform = `translate(${translateX || 0}px, ${translateY || 0 }px) rotate(${rotate || 0}rad) skew(${skewX || 0}rad, ${skewY || 0}rad) scale(${scaleX || 1}, ${scaleY || 1})`;
 
 	/**
 	 * Choose tile background color
