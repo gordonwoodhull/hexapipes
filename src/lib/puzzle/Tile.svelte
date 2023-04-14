@@ -77,7 +77,7 @@
 			d={path}
 			stroke={$state.color}
 			stroke-width={pipeWidth}
-			stroke-linejoin="round"
+			stroke-linejoin="bevel"
 			stroke-linecap="round"
 		/>
 		{#if controlMode === 'orient_lock' && !$state.locked && !solved}
