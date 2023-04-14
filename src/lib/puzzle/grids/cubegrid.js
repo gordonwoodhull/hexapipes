@@ -8,7 +8,7 @@ const DIRD = 8;
 const YSTEP = Math.sqrt(3) / 2;
 const SQUARE = new RegularPolygonTile(4, 0, 0.5);
 const RHOMB_ROTS_DIRS = new Map([
-	[0, [Math.PI / 2, -Math.PI / 6]],
+	[0, [0, -Math.PI / 6]],
 	[1, [- Math.PI / 6, Math.PI / 2]],
 	[2, [Math.PI / 6, -Math.PI * 5 / 6]]
 ]);
@@ -24,10 +24,10 @@ export class CubeGrid {
 	]);
 	#XY_DELTA_RHOMB = new Map([
 			[0, new Map([
-				[DIRA, [[0, 1], 1, 1]],
-				[DIRB, [[1, 1], 0, 2]],
-				[DIRC, [[0, 0], 0, 1]],
-				[DIRD, [[0, 0], 0, 2]]
+				[DIRA, [[1, 1], 0, 2]],
+				[DIRB, [[0, 0], 0, 1]],
+				[DIRC, [[0, 0], 0, 2]],
+				[DIRD, [[0, 1], 1, 1]]
 			])],
 			[1, new Map([
 				[DIRA, [[0, 1], -1, 2]],
@@ -276,14 +276,22 @@ export class CubeGrid {
 	 * @param {Number} index
 	 */
 	getSkew(index) {
-		return Math.PI / 6;
+		if (index % 3 == 0) {
+			return [0, -Math.PI / 6];
+		} else {
+			return [Math.PI / 6, 0];
+		}
 	}
 
 	/**
 	 * @param {Number} index
 	 */
 	getScale(index) {
-		return [1/Math.sqrt(3), YSTEP/Math.sqrt(3)];
+		if (index % 3 === 0) {
+			return [YSTEP/Math.sqrt(3), 1/Math.sqrt(3)];
+		} else {
+			return [1/Math.sqrt(3), YSTEP/Math.sqrt(3)];
+		}
 	}
 
 	/**
