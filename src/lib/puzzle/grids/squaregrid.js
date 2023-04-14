@@ -186,26 +186,10 @@ export class SquareGrid {
 	}
 
 	/**
-	 * Get rotation and offset for entire tile
-	 * @param {Number} index
-	 * @returns
-	 */
-	getTileRotOffset(index) {
-		return [0, 0, 0];
-	}
-
-	/**
 	 * @param {Number} index
 	 */
-	getSkew(index) {
-		return [0, 0];
-	}
-
-	/**
-	 * @param {Number} index
-	 */
-	getScale(index) {
-		return [1, 1];
+	getTileTransform(index) {
+		return {};
 	}
 
 	/**

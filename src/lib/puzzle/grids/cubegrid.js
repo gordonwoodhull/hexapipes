@@ -263,35 +263,52 @@ export class CubeGrid {
 	}
 
 	/**
+	 * @param {Number} index
+	 */
+	getTileTransform(index) {
+		let scaleX = 0, scaleY = 0;
+		if (index % 3 === 0) {
+			scaleX = YSTEP/Math.sqrt(3)
+			scaleY = 1/Math.sqrt(3);
+		} else {
+			scaleX = 1/Math.sqrt(3);
+			scaleY = YSTEP/Math.sqrt(3);
+		}
+		let skewX = 0, skewY = 0;
+		if (index % 3 == 0) {
+			skewY = -Math.PI / 6;
+		} else {
+			skewX = Math.PI / 6;
+		}
+		const [rotate, dir] = RHOMB_ROTS_DIRS.get(index % 3);
+		return {
+			scaleX,
+			scaleY,
+			skewX,
+			skewY,
+			rotate,
+			translateX: Math.cos(dir)*Math.sqrt(3)/6,
+			translateY: -Math.sin(dir)*Math.sqrt(3)/6,
+		}
+	}
+	/**
 	 * Get rotation and offset for entire tile
 	 * @param {Number} index
 	 * @returns
 	 */
 	getTileRotOffset(index) {
-		const [rot, dir] = RHOMB_ROTS_DIRS.get(index % 3);
-		return [rot, Math.cos(dir)*Math.sqrt(3)/6, -Math.sin(dir)*Math.sqrt(3)/6];
 	}
 
 	/**
 	 * @param {Number} index
 	 */
 	getSkew(index) {
-		if (index % 3 == 0) {
-			return [0, -Math.PI / 6];
-		} else {
-			return [Math.PI / 6, 0];
-		}
 	}
 
 	/**
 	 * @param {Number} index
 	 */
 	getScale(index) {
-		if (index % 3 === 0) {
-			return [YSTEP/Math.sqrt(3), 1/Math.sqrt(3)];
-		} else {
-			return [1/Math.sqrt(3), YSTEP/Math.sqrt(3)];
-		}
 	}
 
 	/**
