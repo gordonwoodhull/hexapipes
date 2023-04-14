@@ -13,7 +13,7 @@ const RHOMB_ROTS_DIRS = new Map([
 	[2, [Math.PI / 6, -Math.PI * 5 / 6]]
 ]);
 
-export class CubesTiling {
+export class CubeGrid {
 	DIRECTIONS = [DIRA, DIRB, DIRC, DIRD];
 	EDGEMARK_DIRECTIONS = [DIRB, DIRC];
 	OPPOSITE = new Map([
@@ -44,7 +44,7 @@ export class CubesTiling {
 
 	])
 	NUM_DIRECTIONS = 4;
-	KIND = 'cubes';
+	KIND = 'cube';
 	PIPE_WIDTH = 0.15;
 	STROKE_WIDTH = 0.06;
 	PIPE_LENGTH = 0.5;

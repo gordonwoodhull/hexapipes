@@ -1,14 +1,14 @@
 import { HexaGrid } from '$lib/puzzle/grids/hexagrid';
 import { SquareGrid } from '$lib/puzzle/grids/squaregrid';
 import { OctaGrid } from '$lib/puzzle/grids/octagrid';
-import { CubesTiling } from '$lib/puzzle/grids/cubestiling';
+import { CubeGrid } from '$lib/puzzle/grids/cubegrid';
 
 /**
- * @typedef {'hexagonal'|'square'|'octagonal'|'cubes'} GridKind
+ * @typedef {'hexagonal'|'square'|'octagonal'|'cube'} GridKind
  */
 
 /**
- * @typedef {HexaGrid|SquareGrid|OctaGrid|CubesTiling} Grid
+ * @typedef {HexaGrid|SquareGrid|OctaGrid|CubeGrid} Grid
  */
 
 /**
@@ -28,8 +28,8 @@ export function createGrid(kind, width, height, wrap, tiles = undefined) {
 		grid = new OctaGrid(width, height, wrap, tiles);
 	} else if (kind === 'square') {
 		grid = new SquareGrid(width, height, wrap, tiles);
-	} else if (kind === 'cubes') {
-		grid = new CubesTiling(width, height, wrap, tiles);
+	} else if (kind === 'cube') {
+		grid = new CubeGrid(width, height, wrap, tiles);
 	} else {
 		throw `Unknown grid kind ${kind}`;
 	}
@@ -37,7 +37,7 @@ export function createGrid(kind, width, height, wrap, tiles = undefined) {
 }
 
 /** @type {GridKind[]} */
-export const gridKinds = ['hexagonal', 'square', 'octagonal', 'cubes'];
+export const gridKinds = ['hexagonal', 'square', 'octagonal', 'cube'];
 
 export const gridInfo = {
 	hexagonal: {
@@ -61,11 +61,11 @@ export const gridInfo = {
 		exampleGrid: new OctaGrid(3, 3, false),
 		exampleTiles: [32, 64, 192, 18, 68, 66, 5, 200, 128, 130, 168, 0, 40, 8, 0, 0, 0, 0]
 	},
-	cubes: {
-		title: 'Cubes',
-		url: 'cubes',
+	cube: {
+		title: 'Cube',
+		url: 'cube',
 		wrap: true,
-		exampleGrid: new CubesTiling(3, 3, false),
+		exampleGrid: new CubeGrid(3, 3, false),
 		// fixme when puzzle generation works
 		exampleTiles: [9, 0, 8,  0, 0, 0,  10, 6, 12,
 			0, 7, 0,  12, 0, 1,  0, 13, 0,
