@@ -1,11 +1,11 @@
 import { RegularPolygonTile } from '$lib/puzzle/grids/polygonutils';
 
-const EAST = 1;
-const NORTHEAST = 2;
-const NORTHWEST = 4;
-const WEST = 8;
-const SOUTHWEST = 16;
-const SOUTHEAST = 32;
+export const EAST = 1;
+export const NORTHEAST = 2;
+export const NORTHWEST = 4;
+export const WEST = 8;
+export const SOUTHWEST = 16;
+export const SOUTHEAST = 32;
 
 const YSTEP = Math.sqrt(3) / 2;
 
