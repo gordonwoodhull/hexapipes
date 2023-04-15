@@ -147,6 +147,9 @@
 			<label for="octagonal">
 				<input type="radio" bind:group={gridKind} id="octagonal" value="octagonal" /> Octagonal
 			</label>
+			<label for="cube">
+				<input type="radio" bind:group={gridKind} id="cube" value="cube" /> Cube
+			</label>
 		</label>
 	</div>
 	<label for="width">

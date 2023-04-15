@@ -172,13 +172,13 @@
 		let avoidObvious = 0;
 		let avoidStraights = 0;
 		grid = createGrid(gridKind, width, height, wrap, tiles);
-		if (category.startsWith('square')) {
+		if (category.startsWith('square') || category.startsWith('cube')) {
 			branchingAmount = Math.random() * 0.5 + 0.5; // 0.5 to 1
 			avoidObvious = Math.random() * 0.5 + 0.1; // 0.1 to 0.6
 			avoidStraights = Math.random() * 0.5 + 0.25; // 0.25 to 0.75
 		}
 		const gen = new Generator(grid);
-		tiles = gen.generate(branchingAmount, avoidObvious, avoidStraights, 'whatever');
+		tiles = gen.generate(branchingAmount, avoidObvious, avoidStraights);
 		genId += 1;
 		window.localStorage.setItem(instanceStoreName, JSON.stringify({ tiles: tiles }));
 	}
