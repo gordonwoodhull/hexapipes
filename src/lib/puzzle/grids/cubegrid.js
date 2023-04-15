@@ -1,4 +1,5 @@
 import { RegularPolygonTile } from '$lib/puzzle/grids/polygonutils';
+import { HexaGrid, EAST, NORTHEAST, NORTHWEST, WEST, SOUTHWEST, SOUTHEAST } from './hexagrid';
 
 const DIRA = 1;
 const DIRB = 2;
@@ -22,27 +23,26 @@ export class CubeGrid {
 		[DIRC, DIRD],
 		[DIRD, DIRC]
 	]);
-	#XY_DELTA_RHOMB = new Map([
-			[0, new Map([
-				[DIRD, [[1, 1], 0, 2]],
-				[DIRA, [[0, 0], 0, 1]],
-				[DIRB, [[0, 0], 0, 2]],
-				[DIRC, [[0, 1], 1, 1]]
-			])],
-			[1, new Map([
-				[DIRA, [[0, 0], 0, 2]],
-				[DIRB, [[0, 0], 0, 0]],
-				[DIRC, [[0, 1], -1, 2]],
-				[DIRD, [[-1, 0], -1, 0]]
-			])],
-			[2, new Map([
-				[DIRA, [[0, 0], 0, 0]],
-				[DIRB, [[0, 0], 0, 1]],
-				[DIRC, [[-1, -1], 0, 0]],
-				[DIRD, [[-1, 0], 1, 1]]
-			])],
-
-	])
+	#RHOMB_NEIGHBOURS = new Map([
+		[0, new Map([
+			[DIRA, [0, 1]],
+			[DIRB, [0, 2]],
+			[DIRC, [SOUTHEAST, 1]],
+			[DIRD, [EAST, 2]]
+		])],
+		[1, new Map([
+			[DIRA, [0, 2]],
+			[DIRB, [0, 1]],
+			[DIRC, [NORTHEAST, 2]],
+			[DIRD, [NORTHWEST, 0]]
+		])],
+		[2, new Map([
+			[DIRA, [0, 0]],
+			[DIRB, [0, 1]],
+			[DIRC, [WEST, 0]],
+			[DIRD, [SOUTHWEST, 1]]
+		])]
+	]);
 	NUM_DIRECTIONS = 4;
 	KIND = 'cube';
 	PIPE_WIDTH = 0.15;
@@ -67,6 +67,8 @@ export class CubeGrid {
 		this.height = height;
 		this.wrap = wrap;
 
+		this.hexagrid = new HexaGrid(width, height, wrap);
+
 		this.emptyCells = new Set();
 		tiles.forEach((tile, index) => {
 			if (tile === 0) {
@@ -75,10 +77,10 @@ export class CubeGrid {
 		});
 		this.total = width * height * 3;
 
-		this.XMIN = -0.6 - (wrap ? 1 : 0);
-		this.XMAX = width - 0.4 + (wrap ? 1 : 0);
-		this.YMIN = -(1 + (wrap ? 1 : 0));
-		this.YMAX = height + (wrap ? 1 : 0);
+		this.XMIN = this.hexagrid.XMIN;
+		this.XMAX = this.hexagrid.XMAX;
+		this.YMIN = this.hexagrid.YMIN;
+		this.YMAX = this.hexagrid.YMAX;
 
 		/* Tile types for use in solver */
 		this.T0 = 0;
@@ -169,32 +171,16 @@ export class CubeGrid {
 		let r = (cubei - c) / this.width;
 		let neighbour = -1;
 
-		const [dxs, dy, rh] = this.#XY_DELTA_RHOMB.get(rhomb)?.get(direction) || [0, 0, 0];
-		const rpar = r % 2;
-		r += dy;
-		c += dxs[rpar];
-		if (this.wrap) {
-			if (r == -1) {
-				r = this.height - 1;
-				c += 1;
-			}
-			if (r == this.height) {
-				r = 0;
-				c -= 1 - (this.height % 2);
-			}
-			if (c < 0 || c === this.width) {
-				c = (c + this.width) % this.width;
-			}
+		const [hexdir, rh] = this.#RHOMB_NEIGHBOURS.get(rhomb)?.get(direction) || [0, 0];
+		if (hexdir != 0) {
+			const { neighbour, empty } = this.hexagrid.find_neighbour(index, hexdir);
+			const cubeNeighbour = neighbour * 3 + rh;
+			const cubeEmpty = empty || this.emptyCells.has(cubeNeighbour);
+			return {neighbour: cubeNeighbour, empty: cubeEmpty};
 		}
-		if (r < 0 || r >= this.height) {
-			neighbour = -1;
-		} else if (c < 0 || c >= this.width) {
-			neighbour = -1;
-		} else {
-			neighbour = (this.width * r + c) * 3 + rh;
-		}
-		const empty = neighbour === -1 || this.emptyCells.has(neighbour);
-		return { neighbour, empty };
+		const cubeNeighbour = (index - (index % 3)) + rh;
+		const empty = this.emptyCells.has(neighbour);
+		return { neighbour: cubeNeighbour, empty };
 	}
 
 	/**
@@ -245,10 +231,9 @@ export class CubeGrid {
 	 * Compute tile orientation after a number of rotations
 	 * @param {Number} tile
 	 * @param {Number} rotations
-	 * @param {Number} index - index of tile
 	 * @returns
 	 */
-	rotate(tile, rotations, index) {
+	rotate(tile, rotations) {
 		return SQUARE.rotate(tile, rotations);
 	}
 
