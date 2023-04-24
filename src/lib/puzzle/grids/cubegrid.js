@@ -32,7 +32,7 @@ export class CubeGrid {
 		])],
 		[1, new Map([
 			[DIRA, [0, 2]],
-			[DIRB, [0, 1]],
+			[DIRB, [0, 0]],
 			[DIRC, [NORTHEAST, 2]],
 			[DIRD, [NORTHWEST, 0]]
 		])],
@@ -166,20 +166,20 @@ export class CubeGrid {
 	 */
 	find_neighbour(index, direction) {
 		const rhomb = index % 3;
-		const cubei = Math.floor(index/3);
+		const cubei = (index - rhomb) / 3;
 		let c = cubei % this.width;
 		let r = (cubei - c) / this.width;
 		let neighbour = -1;
 
 		const [hexdir, rh] = this.#RHOMB_NEIGHBOURS.get(rhomb)?.get(direction) || [0, 0];
 		if (hexdir != 0) {
-			const { neighbour, empty } = this.hexagrid.find_neighbour(index, hexdir);
-			const cubeNeighbour = neighbour * 3 + rh;
+			const { neighbour, empty } = this.hexagrid.find_neighbour(cubei, hexdir);
+			const cubeNeighbour = neighbour === -1 ? -1 : neighbour * 3 + rh;
 			const cubeEmpty = empty || this.emptyCells.has(cubeNeighbour);
 			return {neighbour: cubeNeighbour, empty: cubeEmpty};
 		}
-		const cubeNeighbour = (index - (index % 3)) + rh;
-		const empty = this.emptyCells.has(neighbour);
+		const cubeNeighbour = index - rhomb + rh;
+		const empty = this.emptyCells.has(cubeNeighbour);
 		return { neighbour: cubeNeighbour, empty };
 	}
 
