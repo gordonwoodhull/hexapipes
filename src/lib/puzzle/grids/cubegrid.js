@@ -116,47 +116,10 @@ export class CubeGrid {
 	 * @returns {{index: Number, x:Number, y: Number, rh: Number}}
 	 */
 	which_tile_at(x, y) {
-		const r = y / YSTEP;
-		const r0 = Math.round(r);
-		const c0 = Math.round(x - (r0 % 2 === 0 ? 0 : 0.5));
-		const x0 = c0 + (r0 % 2 === 0 ? 0.0 : 0.5);
-		const y0 = r0 * YSTEP;
-		const distance0 = Math.sqrt((x - x0) ** 2 + (y - y0) ** 2);
-		const rhomb0 = this.angle_to_rhomb(Math.atan2(-y + y0, x - x0));
-		let index = this.rcb_to_index(y0, x0, rhomb0);
-		if (distance0 <= 0.5) {
-			return {
-				index: this.rcb_to_index(r0, c0, rhomb0),
-				x: x0,
-				y: y0,
-				rh: rhomb0
-			};
-		} else {
-			let r1 = Math.floor(r);
-			if (r1 === r0) {
-				r1 = Math.ceil(r);
-			}
-			const c1 = Math.round(x - (r1 % 2 === 0 ? 0 : 0.5));
-			const x1 = c1 + (r1 % 2 === 0 ? 0.0 : 0.5);
-			const y1 = r1 * YSTEP;
-			const distance1 = Math.sqrt((x - x1) ** 2 + (y - y1) ** 2);
-			const rhomb1 = this.angle_to_rhomb(Math.atan2(y - y1, x - x1));
-			if (distance0 < distance1) {
-				return {
-					index: this.rcb_to_index(r0, c0, rhomb0),
-					x: x0,
-					y: y0,
-					rh: rhomb0
-				};
-			} else {
-				return {
-					index: this.rcb_to_index(r1, c1, rhomb1),
-					x: x1,
-					y: y1,
-					rh: rhomb1
-				};
-			}
-		}
+		const {index: index0, x: x0, y: y0} = this.hexagrid.which_tile_at(x, y)
+		const rhomb0 = this.angle_to_rhomb(Math.atan2(-(y - y0), x - x0));
+		const index = 3 * index0 + rhomb0;
+		return {index, x: x0, y: y0, rh: rhomb0};
 	}
 
 	/**
@@ -191,23 +154,8 @@ export class CubeGrid {
 	 * @returns {Number}
 	 */
 	rcb_to_index(r, c, b) {
-		if (this.wrap) {
-			r = r % this.height;
-			if (r < 0) {
-				r += this.height;
-			}
-			c = c % this.width;
-			if (c < 0) {
-				c += this.width;
-			}
-		} else {
-			if (r < 0 || r >= this.height) {
-				return -1;
-			} else if (c < 0 || c >= this.width) {
-				return -1;
-			}
-		}
-		return (this.width * r + c) * 3 + b;
+		const index = this.hexagrid.rc_to_index(r, c);
+		return index * 3 + b;
 	}
 
 	/**
