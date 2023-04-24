@@ -240,37 +240,18 @@ export class CubeGrid {
 	 * @returns {import('$lib/puzzle/viewbox').VisibleTile[]}
 	 */
 	getVisibleTiles(box) {
-		let rmin = Math.floor(box.ymin) - 1;
-		let rmax = Math.ceil(box.ymin + box.height) + 1;
-		if (!this.wrap) {
-			rmin = Math.max(0, rmin);
-			rmax = Math.min(this.height - 1, rmax);
-		}
-		let cmin = Math.floor(box.xmin) - 1;
-		let cmax = Math.ceil(box.xmin + box.width) + 1;
-		if (!this.wrap) {
-			cmin = Math.max(0, cmin);
-			cmax = Math.min(this.width - 1, cmax);
-		}
+		const vishex = this.hexagrid.getVisibleTiles(box);
 		const visibleTiles = [];
-		for (let r = rmin; r <= rmax; r++) {
-			for (let c = cmin; c <= cmax; c++) {
-				for (let b = 0; b < 3; ++b) {
-					const index = this.rcb_to_index(r, c, b);
-					if (index === -1) {
-						continue;
-					}
-					const x = c + (r % 2 === 0 ? 0.0 : 0.5);
-					const y = r * YSTEP;
-					const key = `${Math.round(10 * x)}_${Math.round(10 * y)}_${b}`;
-					visibleTiles.push({
-						index,
-						x,
-						y,
-						b,
-						key
-					});
-				}
+		for (const vt of vishex) {
+			for (let b = 0; b < 3; ++b) {
+				const {x, y} = vt;
+				const key = `${Math.round(10 * x)}_${Math.round(10 * y)}_${b}`;
+				visibleTiles.push({
+					index: vt.index * 3 + b,
+					x,
+					y,
+					key
+				});
 			}
 		}
 		return visibleTiles;
