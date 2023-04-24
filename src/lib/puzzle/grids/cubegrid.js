@@ -294,7 +294,6 @@ export class CubeGrid {
 	getVisibleTiles(box) {
 		let rmin = Math.floor(box.ymin) - 1;
 		let rmax = Math.ceil(box.ymin + box.height) + 1;
-		console.assert(!this.wrap)
 		if (!this.wrap) {
 			rmin = Math.max(0, rmin);
 			rmax = Math.min(this.height - 1, rmax);
