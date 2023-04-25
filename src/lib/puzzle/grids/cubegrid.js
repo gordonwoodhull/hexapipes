@@ -1,6 +1,9 @@
 import { RegularPolygonTile } from '$lib/puzzle/grids/polygonutils';
 import { HexaGrid, EAST, NORTHEAST, NORTHWEST, WEST, SOUTHWEST, SOUTHEAST } from './hexagrid';
 
+// ambiguous indirect export if i try to import this from ./hexagrid
+const HEXAGON = new RegularPolygonTile(6, 0, 0.5);
+
 const DIRA = 1;
 const DIRB = 2;
 const DIRC = 4;
@@ -13,10 +16,11 @@ const RHOMB_ROTS_DIRS = new Map([
 	[1, [5 * Math.PI / 6, Math.PI / 2]],
 	[2, [Math.PI / 6, -Math.PI * 5 / 6]]
 ]);
+const rhomb_dir_key = (rh, dir) => `${rh}_${dir}`;
 
 export class CubeGrid {
 	DIRECTIONS = [DIRA, DIRB, DIRC, DIRD];
-	EDGEMARK_DIRECTIONS = [DIRB, DIRC];
+	EDGEMARK_DIRECTIONS = [DIRC, DIRD];
 	OPPOSITE = new Map([
 		[DIRA, DIRB],
 		[DIRB, DIRA],
@@ -43,6 +47,16 @@ export class CubeGrid {
 			[DIRD, [SOUTHWEST, 1]]
 		])]
 	]);
+	#HEXDIR_TO_RHOMBDIR = new Map([
+		[EAST, [0, DIRD]],
+		[NORTHEAST, [1, DIRC]],
+		[NORTHWEST, [1, DIRD]],
+		[WEST, [2, DIRC]],
+		[SOUTHWEST, [2, DIRD]],
+		[SOUTHEAST, [0, DIRC]]
+	])
+	#RHOMBDIR_TO_HEXDIR = new Map([ ...this.#HEXDIR_TO_RHOMBDIR.entries()]
+		   .map(([k,v]) => [rhomb_dir_key(...v),  k]));
 	NUM_DIRECTIONS = 4;
 	KIND = 'cube';
 	PIPE_WIDTH = 0.15;
@@ -301,8 +315,14 @@ export class CubeGrid {
 	 * @param {Number} index
 	 * @returns
 	 */
-	getEdgemarkLine(direction, index = 0) {
-		return SQUARE.get_edgemark_line(direction);
+	getEdgemarkLine(direction, index) {
+		if (direction === DIRC || direction === DIRD) {
+			const rhomb = index % 3;
+			const hexdir = this.#RHOMBDIR_TO_HEXDIR.get(rhomb_dir_key(rhomb, direction));
+			console.log('edgemark line', rhomb_dir_key(rhomb, direction), hexdir);
+			return HEXAGON.get_edgemark_line(hexdir);
+		}
+		return {x1:0, x2: 0, y1: 0, y2: 0}; // until we get the complementary hexes
 	}
 
 	/**
@@ -316,7 +336,18 @@ export class CubeGrid {
 	 * @param {Number} y2
 	 */
 	detectEdgemarkGesture(tile_index, tile_x, tile_y, x1, x2, y1, y2) {
-		return SQUARE.detect_edgemark_gesture(x1 - tile_x, x2 - tile_x, tile_y - y1, tile_y - y2);
+		const result = HEXAGON.detect_edgemark_gesture(x1 - tile_x, x2 - tile_x, tile_y - y1, tile_y - y2);
+		const rhomb = tile_index % 3, hex_index = (tile_index - rhomb) / 3;
+		const [rh, direction] = this.#HEXDIR_TO_RHOMBDIR.get(result.direction);
+		const edgemark = {
+			mark: result.mark,
+			direction
+		}
+		const result2 = {tile_index: hex_index === -1 ? -1 : hex_index*3 + rh, edgemark};
+		if (edgemark.mark !== 'none') {
+			console.log('edgemark gesture', result2.tile_index, result2.edgemark.direction)
+		}
+		return result2;
 	}
 
 	/**
@@ -327,6 +358,6 @@ export class CubeGrid {
 		const { x, y, tileX, tileY } = point;
 		const dx = x - tileX;
 		const dy = tileY - y;
-		return SQUARE.is_close_to_edge(dx, dy);
+		return HEXAGON.is_close_to_edge(dx, dy);
 	}
 }

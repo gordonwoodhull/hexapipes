@@ -222,7 +222,7 @@ export function controls(node, game) {
 		if (state === 'mousedown' && mouseDownOrigin.tileIndex !== -1 && distance >= 0.2) {
 			const tileIndex = mouseDownOrigin.tileIndex;
 			// this might be drawing an edge mark
-			const { mark, direction } = grid.detectEdgemarkGesture(
+			const {tile_index, edgemark: { mark, direction } } = grid.detectEdgemarkGesture(
 				tileIndex,
 				mouseDownOrigin.tileX,
 				mouseDownOrigin.tileY,
@@ -231,8 +231,9 @@ export function controls(node, game) {
 				mouseDownOrigin.y,
 				y
 			);
+
 			if (mark !== 'none') {
-				game.toggleEdgeMark(mark, tileIndex, direction, currentSettings.assistant);
+				game.toggleEdgeMark(mark, tile_index, direction, currentSettings.assistant);
 				save();
 				touchState = 'idle';
 			}
