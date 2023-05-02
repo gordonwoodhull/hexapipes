@@ -1,5 +1,6 @@
 import { settings } from '$lib/stores';
 import normalizeWheel from 'normalize-wheel';
+import {scale, skew, rotate, translate, compose, inverse, applyToPoint} from 'transformation-matrix';
 
 /**
  * @typedef PointerOrigin
@@ -221,15 +222,26 @@ export function controls(node, game) {
 
 		if (state === 'mousedown' && mouseDownOrigin.tileIndex !== -1 && distance >= 0.2) {
 			const tileIndex = mouseDownOrigin.tileIndex;
+			let {scaleX, scaleY, skewX, skewY, rotateTh, translateX, translateY} = grid.getTileTransform(tileIndex);
+			scaleX = scaleX || 1;
+			scaleY = scaleY || 1;
+			skewX = skewX || 0;
+			skewY = skewY || 0;
+			rotateTh = rotateTh || 0;
+			translateX = translateX || 0;
+			translateY = translateY || 0;
+			//const mat = compose(scale(scaleX, scaleY), skew(skewX, skewY), rotate(rotateTh), translate(translateX, translateY))
+			const mat = compose(translate(translateX, translateY), rotate(rotateTh), skew(skewX, skewY), scale(scaleX, scaleY));
+			const matinv = inverse(mat);
+			const x1 = mouseDownOrigin.x - mouseDownOrigin.tileX;
+			const x2 = x - mouseDownOrigin.tileX;
+			const y1 = mouseDownOrigin.y - mouseDownOrigin.tileY;
+			const y2 = y - mouseDownOrigin.tileY;
+			const downpt = applyToPoint(matinv, [x1, y1]);
+			const uppt = applyToPoint(matinv, [y1, y2]);
 			// this might be drawing an edge mark
 			const { mark, direction } = grid.detectEdgemarkGesture(
-				tileIndex,
-				mouseDownOrigin.tileX,
-				mouseDownOrigin.tileY,
-				mouseDownOrigin.x,
-				x,
-				mouseDownOrigin.y,
-				y
+				tileIndex, x1, x2, -y1, -y2
 			);
 			if (mark !== 'none') {
 				game.toggleEdgeMark(mark, tileIndex, direction, currentSettings.assistant);

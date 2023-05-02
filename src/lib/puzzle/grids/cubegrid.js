@@ -213,13 +213,13 @@ export class CubeGrid {
 		} else {
 			skewX = Math.PI / 6;
 		}
-		const [rotate, dir] = RHOMB_ROTS_DIRS.get(index % 3);
+		const [rotateTh, dir] = RHOMB_ROTS_DIRS.get(index % 3);
 		return {
 			scaleX,
 			scaleY,
 			skewX,
 			skewY,
-			rotate,
+			rotateTh,
 			translateX: Math.cos(dir)*Math.sqrt(3)/6,
 			translateY: -Math.sin(dir)*Math.sqrt(3)/6,
 		}
@@ -308,15 +308,13 @@ export class CubeGrid {
 	/**
 	 * Check if a drag gesture resembles drawing an edge mark
 	 * @param {Number} tile_index
-	 * @param {Number} tile_x
-	 * @param {Number} tile_y
 	 * @param {Number} x1
 	 * @param {Number} x2
 	 * @param {Number} y1
 	 * @param {Number} y2
 	 */
-	detectEdgemarkGesture(tile_index, tile_x, tile_y, x1, x2, y1, y2) {
-		return SQUARE.detect_edgemark_gesture(x1 - tile_x, x2 - tile_x, tile_y - y1, tile_y - y2);
+	detectEdgemarkGesture(tile_index, x1, y1, x2, y2) {
+		return SQUARE.detect_edgemark_gesture(x1, y1, x2, y2);
 	}
 
 	/**
