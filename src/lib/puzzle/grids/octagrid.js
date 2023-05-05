@@ -407,7 +407,7 @@ export class OctaGrid {
 	 * @param {Number} y2
 	 */
 	detectEdgemarkGesture(tile_index, x1, x2, y1, y2) {
-		return this.#tile_at(tile_index).detect_edgemark_gesture(x1, y1, x2, y2);
+		return this.#tile_at(tile_index).detect_edgemark_gesture(x1, x2, y1, y2);
 	}
 
 	/**

@@ -81,6 +81,19 @@ export function controls(node, game) {
 		return [gameX, gameY];
 	}
 
+	function getTransformationMatrix(tileIndex) {
+		let {scaleX, scaleY, skewX, skewY, rotateTh, translateX, translateY} = grid.getTileTransform(tileIndex);
+		scaleX = scaleX || 1;
+		scaleY = scaleY || 1;
+		skewX = skewX || 0;
+		skewY = skewY || 0;
+		rotateTh = rotateTh || 0;
+		translateX = translateX || 0;
+		translateY = translateY || 0;
+		//const mat = compose(scale(scaleX, scaleY), skew(skewX, skewY), rotate(rotateTh), translate(translateX, translateY))
+		return compose(translate(translateX, translateY), rotate(rotateTh), skew(skewX, skewY), scale(scaleX, scaleY));
+	}
+
 	function save() {
 		node.dispatchEvent(new CustomEvent('save'));
 	}
@@ -129,6 +142,7 @@ export function controls(node, game) {
 			if (isClose) {
 				// close to the edge, may be wanting an edge mark
 				edgeMarkTimer = setTimeout(() => {
+					console.log('edgemark timer');
 					const mark = mouseDownOrigin.button === 0 ? 'wall' : 'conn';
 					game.toggleEdgeMark(
 						mark,
@@ -222,27 +236,23 @@ export function controls(node, game) {
 
 		if (state === 'mousedown' && mouseDownOrigin.tileIndex !== -1 && distance >= 0.2) {
 			const tileIndex = mouseDownOrigin.tileIndex;
-			let {scaleX, scaleY, skewX, skewY, rotateTh, translateX, translateY} = grid.getTileTransform(tileIndex);
-			scaleX = scaleX || 1;
-			scaleY = scaleY || 1;
-			skewX = skewX || 0;
-			skewY = skewY || 0;
-			rotateTh = rotateTh || 0;
-			translateX = translateX || 0;
-			translateY = translateY || 0;
-			//const mat = compose(scale(scaleX, scaleY), skew(skewX, skewY), rotate(rotateTh), translate(translateX, translateY))
-			const mat = compose(translate(translateX, translateY), rotate(rotateTh), skew(skewX, skewY), scale(scaleX, scaleY));
-			const matinv = inverse(mat);
-			const x1 = mouseDownOrigin.x - mouseDownOrigin.tileX;
-			const x2 = x - mouseDownOrigin.tileX;
-			const y1 = mouseDownOrigin.y - mouseDownOrigin.tileY;
-			const y2 = y - mouseDownOrigin.tileY;
-			const downpt = applyToPoint(matinv, [x1, y1]);
-			const uppt = applyToPoint(matinv, [y1, y2]);
 			// this might be drawing an edge mark
+			const mat = getTransformationMatrix(tileIndex)
+			const matInv = inverse(mat);
+			const gridTileDownPt = {
+				x: mouseDownOrigin.x - mouseDownOrigin.tileX,
+				y: mouseDownOrigin.y - mouseDownOrigin.tileY
+			};
+			const gridTileUpPt = {
+				x: x - mouseDownOrigin.tileX,
+				y: y - mouseDownOrigin.tileY
+			};
+			const polygonDownPt = applyToPoint(matInv, gridTileDownPt);
+			const polygonUpPt = applyToPoint(matInv, gridTileUpPt);
 			const { mark, direction } = grid.detectEdgemarkGesture(
-				tileIndex, x1, x2, -y1, -y2
+				tileIndex, polygonDownPt.x, polygonUpPt.x, -polygonDownPt.y, -polygonUpPt.y
 			);
+			console.log(`[${tileIndex}, ${gridTileDownPt.x.toFixed(3)}, ${gridTileDownPt.y.toFixed(3)}, ${gridTileUpPt.x.toFixed(3)}, ${gridTileUpPt.y.toFixed(3)}, ${polygonDownPt.x.toFixed(3)}, ${(-polygonDownPt.y).toFixed(3)}, ${polygonUpPt.x.toFixed(3)}, ${(-polygonUpPt.y).toFixed(3)}, '${mark}', ${direction}],`)
 			if (mark !== 'none') {
 				game.toggleEdgeMark(mark, tileIndex, direction, currentSettings.assistant);
 				save();
@@ -541,16 +551,23 @@ export function controls(node, game) {
 			const distance = Math.sqrt((x - t.x) ** 2 + (y - t.y) ** 2);
 
 			if (t.tileIndex !== -1 && distance >= 0.2) {
+				const mat = getTransformationMatrix(tileIndex)
+				const matInv = inverse(mat);
+				const gridTileDownPt = {
+					x: t.x - t.tileX,
+					y: t.y - t.tileY
+				};
+				const gridTileUpPt = {
+					x: x - t.tileX,
+					y: y - t.tileY
+				};
+				const polygonDownPt = applyToPoint(matInv, gridTileDownPt);
+				const polygonUpPt = applyToPoint(matInv, gridTileUpPt);
 				const { mark, direction } = grid.detectEdgemarkGesture(
-					t.tileIndex,
-					t.tileX,
-					t.tileY,
-					t.x,
-					x,
-					t.y,
-					y
+					t.tileIndex, polygonDownPt.x, polygonUpPt.x, -polygonDownPt.y, -polygonUpPt.y
 				);
 				if (mark !== 'none') {
+					console.log('touchend');
 					game.toggleEdgeMark(mark, t.tileIndex, direction, currentSettings.assistant);
 					save();
 					touchState = 'idle';

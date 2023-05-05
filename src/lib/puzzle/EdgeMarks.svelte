@@ -12,6 +12,10 @@
 
 	let state = game.tileStates[i];
 
+	const {scaleX, scaleY, skewX, skewY, rotateTh, translateX, translateY} = game.grid.getTileTransform(i);
+	let transform = null;
+	$: transform = `translate(${cx + (translateX || 0)}px, ${cy + (translateY || 0)}px) rotate(${rotateTh || 0}rad) skew(${skewX || 0}rad, ${skewY || 0}rad) scale(${scaleX || 1}, ${scaleY || 1})`;
+
 	/**
 	 *
 	 * @param {import('$lib/puzzle/game').EdgeMark[]} marks
@@ -42,7 +46,7 @@
 	$: visibleEdgeMarks = visibleMarks($state.edgeMarks);
 </script>
 
-<g class="edgemarks" transform="translate({cx},{cy})">
+<g class="edgemarks" style="transform: {transform}">
 	{#each visibleEdgeMarks as { x1, y1, x2, y2, state, direction } (direction)}
 		<line
 			transition:fade|local={{ duration: 100 }}
