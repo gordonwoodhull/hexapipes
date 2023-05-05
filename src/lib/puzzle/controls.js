@@ -551,7 +551,7 @@ export function controls(node, game) {
 			const distance = Math.sqrt((x - t.x) ** 2 + (y - t.y) ** 2);
 
 			if (t.tileIndex !== -1 && distance >= 0.2) {
-				const mat = getTransformationMatrix(tileIndex)
+				const mat = getTransformationMatrix(t.tileIndex)
 				const matInv = inverse(mat);
 				const gridTileDownPt = {
 					x: t.x - t.tileX,

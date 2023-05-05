@@ -304,7 +304,6 @@ export class CubeGrid {
 	getEdgemarkLine(direction, index = 0) {
 		return SQUARE.get_edgemark_line(direction);
 	}
-
 	/**
 	 * Check if a drag gesture resembles drawing an edge mark
 	 * @param {Number} tile_index
