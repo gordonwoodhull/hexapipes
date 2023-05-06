@@ -1,4 +1,5 @@
 import { RegularPolygonTile } from '$lib/puzzle/grids/polygonutils';
+import { getTransformationMatrix, getPolygonGestureCoords } from './gridutils'
 import { HexaGrid, EAST, NORTHEAST, NORTHWEST, WEST, SOUTHWEST, SOUTHEAST } from './hexagrid';
 
 const DIRA = 1;
@@ -312,8 +313,9 @@ export class CubeGrid {
 	 * @param {Number} y1
 	 * @param {Number} y2
 	 */
-	detectEdgemarkGesture(tile_index, x1, x2, y1, y2) {
-		return SQUARE.detect_edgemark_gesture(x1, x2, y1, y2);
+	detectEdgemarkGesture(tile_index, tile_x, tile_y, x1, x2, y1, y2) {
+		const mat = getTransformationMatrix(this.getTileTransform(tile_index));
+		return SQUARE.detect_edgemark_gesture(...getPolygonGestureCoords(mat, tile_x, tile_y, x1, x2, y1, y2));
 	}
 
 	/**
