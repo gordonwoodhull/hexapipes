@@ -293,7 +293,7 @@ export class CubeGrid {
 	 * @returns
 	 */
 	getEdgemarkLine(direction, index = 0) {
-		return SQUARE.get_edgemark_line(direction);
+		return SQUARE.get_edgemark_line(direction, false);
 	}
 	/**
 	 * Check if a drag gesture resembles drawing an edge mark

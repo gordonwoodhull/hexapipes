@@ -305,7 +305,7 @@ export class RegularPolygonTile {
 	 * Returns coordinates for drawing edgemark line relative to tile center
 	 * @param {Number} direction
 	 */
-	get_edgemark_line(direction) {
+	get_edgemark_line(direction, extendOut = true) {
 		const cached = this.cache.edgemark_line.get(direction);
 		if (cached !== undefined) {
 			return cached;
@@ -321,8 +321,8 @@ export class RegularPolygonTile {
 		const line = {
 			x1: offset_x - dx,
 			y1: -offset_y + dy,
-			x2: offset_x + dx,
-			y2: -offset_y - dy
+			x2: offset_x + (extendOut ? dx : 0),
+			y2: -offset_y - (extendOut ? dy : 0)
 		};
 		this.cache.edgemark_line.set(direction, line);
 		return line;
