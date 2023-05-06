@@ -1,5 +1,5 @@
 import { RegularPolygonTile } from '$lib/puzzle/grids/polygonutils';
-import { getTransformationMatrix, getPolygonGestureCoords } from './gridutils'
+import { getTransformationMatrix, getPolygonGestureCoords, getPolygonCoords } from './gridutils';
 
 export const EAST = 1;
 export const NORTHEAST = 2;
@@ -518,9 +518,8 @@ export class HexaGrid {
 	 * @param {import('$lib/puzzle/controls').PointerOrigin} point
 	 */
 	whichEdge(point) {
-		const { x, y, tileX, tileY } = point;
-		const dx = x - tileX;
-		const dy = tileY - y;
-		return HEXAGON.is_close_to_edge(dx, dy);
+		const mat = getTransformationMatrix(this.getTileTransform(point.tileIndex));
+		const pt = getPolygonCoords(mat, point);
+		return HEXAGON.is_close_to_edge(...pt);
 	}
 }

@@ -1,5 +1,5 @@
 import { RegularPolygonTile } from '$lib/puzzle/grids/polygonutils';
-import { getTransformationMatrix, getPolygonGestureCoords } from './gridutils'
+import { getTransformationMatrix, getPolygonGestureCoords, getPolygonCoords } from './gridutils';
 
 const EAST = 1;
 const NORTHEAST = 2;
@@ -419,9 +419,8 @@ export class OctaGrid {
 	 * @param {import('$lib/puzzle/controls').PointerOrigin} point
 	 */
 	whichEdge(point) {
-		const { x, y, tileX, tileY, tileIndex } = point;
-		const dx = x - tileX;
-		const dy = tileY - y;
-		return this.#tile_at(tileIndex).is_close_to_edge(dx, dy);
+		const mat = getTransformationMatrix(this.getTileTransform(point.tileIndex));
+		const pt = getPolygonCoords(mat, point);
+		return this.#tile_at(tileIndex).is_close_to_edge(...pt);
 	}
 }

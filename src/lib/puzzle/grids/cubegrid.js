@@ -1,5 +1,5 @@
 import { RegularPolygonTile } from '$lib/puzzle/grids/polygonutils';
-import { getTransformationMatrix, getPolygonGestureCoords } from './gridutils'
+import { getTransformationMatrix, getPolygonGestureCoords, getPolygonCoords } from './gridutils';
 import { HexaGrid, EAST, NORTHEAST, NORTHWEST, WEST, SOUTHWEST, SOUTHEAST } from './hexagrid';
 
 const DIRA = 1;
@@ -313,9 +313,8 @@ export class CubeGrid {
 	 * @param {import('$lib/puzzle/controls').PointerOrigin} point
 	 */
 	whichEdge(point) {
-		const { x, y, tileX, tileY } = point;
-		const dx = x - tileX;
-		const dy = tileY - y;
-		return SQUARE.is_close_to_edge(dx, dy);
+		const mat = getTransformationMatrix(this.getTileTransform(point.tileIndex));
+		const pt = getPolygonCoords(mat, point);
+		return SQUARE.is_close_to_edge(...pt);
 	}
 }
