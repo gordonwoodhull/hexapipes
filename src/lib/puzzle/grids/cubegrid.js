@@ -200,20 +200,10 @@ export class CubeGrid {
 	 * @param {Number} index
 	 */
 	getTileTransform(index) {
-		let scaleX = 0, scaleY = 0;
-		if (false) { // index % 3 === 0) {
-			scaleX = YSTEP/Math.sqrt(3)
-			scaleY = 1/Math.sqrt(3);
-		} else {
-			scaleX = 1/Math.sqrt(3);
-			scaleY = YSTEP/Math.sqrt(3);
-		}
-		let skewX = 0, skewY = 0;
-		if (false) { // index % 3 == 0) {
-			skewY = -Math.PI / 6;
-		} else {
-			skewX = Math.PI / 6;
-		}
+		const scaleX = 1/Math.sqrt(3);
+		const scaleY = YSTEP/Math.sqrt(3);
+		const skewY = 0;
+		const skewX = Math.PI / 6;
 		const [rotateTh, dir] = RHOMB_ROTS_DIRS.get(index % 3);
 		return {
 			scaleX,
