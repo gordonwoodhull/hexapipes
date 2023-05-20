@@ -15,6 +15,7 @@ import { createViewBox } from './viewbox';
  * @property {String} color
  * @property {Boolean} locked
  * @property {EdgeMark[]} edgeMarks
+ * @property {EdgeMark[]} reflectEdgeMarks
  */
 
 /**
@@ -28,6 +29,7 @@ import { createViewBox } from './viewbox';
  * @property {Boolean} isPartOfIsland
  * @property {Boolean} hasDisconnects
  * @property {EdgeMark[]} edgeMarks
+ * @property {EdgeMark[]} reflectEdgeMarks
  */
 
 /**
@@ -174,7 +176,8 @@ export function PipesGame(grid, tiles, savedProgress) {
 				isPartOfIsland: false,
 				hasDisconnects: false,
 				locked: savedTile.locked,
-				edgeMarks: savedTile.edgeMarks || [...defaultEdgeMarks]
+				edgeMarks: savedTile.edgeMarks || [...defaultEdgeMarks],
+				reflectEdgeMarks: savedTile.reflectEdgeMarks || [...defaultEdgeMarks]
 			});
 		});
 	} else {
@@ -197,7 +200,8 @@ export function PipesGame(grid, tiles, savedProgress) {
 				isPartOfIsland: false,
 				hasDisconnects: false,
 				locked: false,
-				edgeMarks
+				edgeMarks,
+				reflectEdgeMarks: [...defaultEdgeMarks]
 			});
 		});
 	}
@@ -311,7 +315,10 @@ export function PipesGame(grid, tiles, savedProgress) {
 				// remember that and remove edgemarks otherwise
 				edgeMarks: tileState.data.edgeMarks.map((edgemark) => {
 					return edgemark === 'none' ? 'none' : 'empty';
-				})
+				}),
+				reflectEdgeMarks: tileState.data.reflectEdgeMarks.map((edgemark) => {
+					return edgemark === 'none' ? 'none' : 'empty';
+				}),
 			});
 		});
 
@@ -402,6 +409,13 @@ export function PipesGame(grid, tiles, savedProgress) {
 			tileState.data.edgeMarks[index] = mark;
 		}
 		tileState.set(tileState.data);
+		if (self.grid.EDGEMARK_REFLECTS) {
+			const reflectDir = self.grid.OPPOSITE.get(direction);
+			const reflectIndex = self.grid.EDGEMARK_REFLECTS.indexOf(reflectDir);
+			const neighbourState = self.tileStates[neighbour];
+			neighbourState.data.reflectEdgeMarks[reflectIndex] = tileState.data.edgeMarks[index];
+			neighbourState.set(neighbourState.data);
+		}
 		if (tileState.data.edgeMarks[index] !== 'empty' && assistant) {
 			self.rotateToMatchMarks(tileIndex);
 			self.rotateToMatchMarks(neighbour);

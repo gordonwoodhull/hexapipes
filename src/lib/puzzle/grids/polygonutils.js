@@ -1,3 +1,5 @@
+import { scale, skew, rotate, compose, inverse, applyToPoint } from 'transformation-matrix';
+
 export class TileType {
 	/**
 	 *
@@ -360,8 +362,8 @@ export class RegularPolygonTile {
 	 * Returns coordinates for drawing edgemark line relative to tile center
 	 * @param {Number} direction
 	 */
-	get_edgemark_line(direction) {
-		const cached = this.cache.edgemark_line.get(direction);
+	get_edgemark_line(direction, extendOut = true) {
+		const cached = this.cache.edgemark_line.get(`${direction}-${extendOut}`);;
 		if (cached !== undefined) {
 			return cached;
 		}
@@ -376,10 +378,54 @@ export class RegularPolygonTile {
 		const line = {
 			x1: offset_x - dx,
 			y1: -offset_y + dy,
-			x2: offset_x + dx,
-			y2: -offset_y - dy
+			x2: offset_x + (extendOut ? dx : 0),
+			y2: -offset_y - (extendOut ? dy : 0)
 		};
-		this.cache.edgemark_line.set(direction, line);
+		this.cache.edgemark_line.set(`${direction}-${extendOut}`, line);
 		return line;
+	}
+}
+
+
+export class TransformedPolygonTile extends RegularPolygonTile {
+	constructor(num_directions, angle_offset, radius_in, directions, border_width, scaleX, scaleY, skewX, skewY, rotateTh) {
+		super(num_directions, angle_offset, radius_in, directions, border_width);
+		// we could instead simplify the CSS & matrix construction
+		scaleX = scaleX || 1;
+		scaleY = scaleY || 1;
+		skewX = skewX || 0;
+		skewY = skewY || 0;
+		rotateTh = rotateTh || 0;
+		this.transformCSS = `rotate(${rotateTh}rad) skew(${skewX}rad, ${skewY}rad) scale(${scaleX}, ${scaleY})`;
+		this.transformMatrix = compose(rotate(rotateTh), skew(skewX, skewY), scale(scaleX, scaleY));
+		this.transformInverse = inverse(this.transformMatrix);
+	}
+
+	click_orient_tile(tile, old_rotations, tx, ty) {
+		const {x, y} = applyToPoint(this.transformInverse, {x: tx, y: ty});
+		return super.click_orient_tile(tile, old_rotations, Math.atan2(-y, x));
+	}
+
+	detect_edgemark_gesture(tileX, tileY, x1, x2, y1, y2) {
+		const gridTileDownPt = {
+			x: x1 - tileX,
+			y: y1 - tileY
+		};
+		const gridTileUpPt = {
+			x: x2 - tileX,
+			y: y2 - tileY
+		};
+		const polygonDownPt = applyToPoint(this.transformInverse, gridTileDownPt);
+		const polygonUpPt = applyToPoint(this.transformInverse, gridTileUpPt);
+		return super.detect_edgemark_gesture(polygonDownPt.x, polygonUpPt.x, -polygonDownPt.y, -polygonUpPt.y);
+	}
+
+	is_close_to_edge(point) {
+		const { x, y, tileX, tileY } = point;
+		const polyPt = applyToPoint(this.transformInverse, {
+			x: x - tileX,
+			y: y - tileY
+		});
+		return super.is_close_to_edge(polyPt.x, -polyPt.y);	
 	}
 }
