@@ -5,7 +5,7 @@ import { EtratGrid } from '$lib/puzzle/grids/etratgrid';
 import { CubeGrid } from '$lib/puzzle/grids/cubegrid';
 
 /**
- * @typedef {'hexagonal'|'square'|'octagonal'|'etrat'} GridKind
+ * @typedef {'hexagonal'|'square'|'octagonal'|'etrat'|'cube'} GridKind
  */
 
 /**

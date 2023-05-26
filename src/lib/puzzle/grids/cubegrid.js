@@ -16,7 +16,7 @@ const RHOMB_DIRS = new Map([
 	[1, Math.PI / 2],
 	[2, -Math.PI * 5 / 6]
 ]);
-const RHOMB_OFS = new Map(
+const RHOMB_OFFSETS = new Map(
 	[...RHOMB_DIRS.entries()].map(([rh, dir]) => [rh, [Math.cos(dir)*Math.sqrt(3)/6, -Math.sin(dir)*Math.sqrt(3)/6]])
 );
 
@@ -98,22 +98,6 @@ export class CubeGrid {
 		this.XMAX = this.hexagrid.XMAX;
 		this.YMIN = this.hexagrid.YMIN;
 		this.YMAX = this.hexagrid.YMAX;
-
-		/* Tile types for use in solver */
-		this.T0 = 0;
-		this.T1 = 1;
-		this.T2L = 3;
-		this.T2I = 5;
-		this.T3 = 7;
-		/** @type {Map<Number,Number>} */
-		this.tileTypes = new Map();
-		for (let t = 0; t < 16; t++) {
-			let rotated = t;
-			while (!this.tileTypes.has(rotated)) {
-				this.tileTypes.set(rotated, t);
-				rotated = this.rotate(rotated, 1);
-			}
-		}
 	}
 
 	/**
@@ -135,8 +119,8 @@ export class CubeGrid {
 	which_tile_at(x, y) {
 		const {index: index0, x: x0, y: y0} = this.hexagrid.which_tile_at(x, y)
 		const rhomb0 = this.angle_to_rhomb(Math.atan2(-(y - y0), x - x0));
-		const index = 3 * index0 + rhomb0;
-		const ofs = RHOMB_OFS.get(rhomb0);
+		const index = index0 >= 0 ? 3 * index0 + rhomb0 : -1;
+		const ofs = RHOMB_OFFSETS.get(rhomb0);
 		return {index, x: x0 + ofs[0], y: y0 + ofs[1], rh: rhomb0};
 	}
 
@@ -182,15 +166,6 @@ export class CubeGrid {
 	 */
 	makeEmpty(index) {
 		this.emptyCells.add(index);
-	}
-
-	/**
-	 * A number corresponding to fully connected tile
-	 * @param {Number} index
-	 * @returns {Number}
-	 */
-	fullyConnected(index) {
-		return 15;
 	}
 
 	/**
@@ -249,7 +224,7 @@ export class CubeGrid {
 		for (const vt of vishex) {
 			for (let b = 0; b < 3; ++b) {
 				const {x, y} = vt;
-				const ofs = RHOMB_OFS.get(b);
+				const ofs = RHOMB_OFFSETS.get(b);
 				const key = `${Math.round(10 * x)}_${Math.round(10 * y)}_${b}`;
 				visibleTiles.push({
 					index: vt.index * 3 + b,
