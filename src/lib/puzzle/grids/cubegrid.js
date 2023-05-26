@@ -20,6 +20,20 @@ const RHOMB_OFS = new Map(
 	[...RHOMB_DIRS.entries()].map(([rh, dir]) => [rh, [Math.cos(dir)*Math.sqrt(3)/6, -Math.sin(dir)*Math.sqrt(3)/6]])
 );
 
+function iOS() {
+	return typeof window === 'object' && ([
+	  'iPad Simulator',
+	  'iPhone Simulator',
+	  'iPod Simulator',
+	  'iPad',
+	  'iPhone',
+	  'iPod'
+	].includes(window.navigator.platform)
+	// iPad on iOS 13 detection
+	|| (window.navigator.userAgent.includes("Mac") && "ontouchend" in document))
+}
+
+
 export class CubeGrid {
 	DIRECTIONS = [DIRA, DIRB, DIRC, DIRD];
 	EDGEMARK_DIRECTIONS = [DIRB, DIRC];
@@ -78,6 +92,8 @@ export class CubeGrid {
 		if (!wrap) {
 			this.hexagrid.useShape('hexagon');
 		}
+
+		this.lineJoin = iOS() ? 'round' : 'bevel';
 
 		this.emptyCells = new Set();
 		this.hexagrid.emptyCells.forEach(index => {

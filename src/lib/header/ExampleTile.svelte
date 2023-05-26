@@ -51,7 +51,7 @@
 			d={path}
 			stroke="white"
 			stroke-width={pipeWidth}
-			stroke-linejoin="bevel"
+			stroke-linejoin={grid.lineJoin || 'round'}
 			stroke-linecap="round"
 		/>
 	</g>

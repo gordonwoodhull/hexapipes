@@ -91,7 +91,7 @@
 			d={path}
 			stroke={$state.color}
 			stroke-width={pipeWidth}
-			stroke-linejoin="bevel"
+			stroke-linejoin={game.grid.lineJoin || 'round'}
 			stroke-linecap="round"
 		/>
 		{#if controlMode === 'orient_lock' && !$state.locked && !solved}
