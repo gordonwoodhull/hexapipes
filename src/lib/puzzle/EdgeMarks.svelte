@@ -18,7 +18,19 @@
 	 *
 	 * @param {import('$lib/puzzle/game').EdgeMark[]} marks
 	 */
-	function visibleMarks(marks, reflectMarks) {
+	function visibleMarks(marks) {
+		let reflectMarks = null;
+		if (game.grid.EDGEMARK_REFLECTS) {
+			reflectMarks = game.grid.EDGEMARK_REFLECTS.map(direction => {
+				const {neighbour} = game.grid.find_neighbour(i, direction);
+				if (neighbour === -1) {
+					return 'none';
+				}
+				const oppositeDir = game.grid.OPPOSITE.get(direction);
+				const oppositeIndex = game.grid.EDGEMARK_DIRECTIONS.indexOf(oppositeDir);
+				return game.tileStates[neighbour].data.edgeMarks[oppositeIndex];
+			});
+		}
 		/**
 		 * @type {{x1:number, x2: number, y1: number, y2:number, state: import('$lib/puzzle/game').EdgeMark, direction:number}[]}
 		 */
@@ -38,7 +50,7 @@
 				direction
 			});
 		});
-		if (game.grid.EDGEMARK_REFLECTS) {
+		if (reflectMarks) {
 			reflectMarks.forEach((state, index) => {
 				if (state === 'none' || state === 'empty' || state === 'wall') {
 					return;
@@ -58,7 +70,7 @@
 		return visible;
 	}
 
-	$: visibleEdgeMarks = visibleMarks($state.edgeMarks, $state.reflectEdgeMarks);
+	$: visibleEdgeMarks = visibleMarks($state.edgeMarks);
 </script>
 
 <g class="edgemarks" style="transform: translate({cx}px,{cy}px) {tile_transform}">
