@@ -93,7 +93,7 @@ export class CubeGrid {
 			this.hexagrid.useShape('hexagon');
 		}
 
-		this.lineJoin = iOS() ? 'round' : 'bevel';
+		this.lineJoin = iOS() ? 'miter' : 'bevel';
 
 		this.emptyCells = new Set();
 		this.hexagrid.emptyCells.forEach(index => {
