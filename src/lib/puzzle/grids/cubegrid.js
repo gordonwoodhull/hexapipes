@@ -198,7 +198,7 @@ export class CubeGrid {
 	 * @returns {RegularPolygonTile}
 	 */
 	polygon_at(index) {
-		return [RIGHT_FACE, TOP_FACE, LEFT_FACE][(index+3)%3];
+		return [RIGHT_FACE, TOP_FACE, LEFT_FACE][index % 3];
 	}
 
 	/**
