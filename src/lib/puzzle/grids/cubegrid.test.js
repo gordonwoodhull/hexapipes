@@ -17,7 +17,7 @@ describe('Test making a cell empty', () => {
 		expect(empty).toBe(true);
 	});
 
-    it('Reports a non-empty neighbour', () => {
+	it('Reports a non-empty neighbour', () => {
 		const { neighbour, empty } = grid.find_neighbour(9, 4);
 		expect(neighbour).toBe(22);
 		expect(empty).toBe(false);
