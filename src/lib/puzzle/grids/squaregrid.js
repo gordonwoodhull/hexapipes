@@ -286,7 +286,7 @@ export class SquareGrid {
 	 * @param {Number} index
 	 */
 	clickOrientTile(tile, old_rotations, tx, ty, index = 0) {
-		return SQUARE.click_orient_tile(tile, old_rotations, Math.atan(-ty, tx));
+		return SQUARE.click_orient_tile(tile, old_rotations, Math.atan2(-ty, tx));
 	}
 
 	/**
