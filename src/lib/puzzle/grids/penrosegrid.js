@@ -6,7 +6,8 @@ import {
 	triangleListsIntersect,
 	Vector,
 	Triangle,
-	Rhombus
+	Rhombus,
+	tatham_neighbor
 } from './penrose-fill-polygon';
 
 const DIRA = 1;
@@ -107,20 +108,20 @@ export class PenroseGrid extends AbstractGrid {
 	initialize(state) {
 		if (state) {
 			this.coordRhomb = {}
+			this.outsideNeighbours = {};
 			for (const [coord, rhomb] of Object.entries(state)) {
-				const {index, neighbors, base} = rhomb;
+				const {index, neighbors, base, tri1, tri2, outside} = rhomb;
 				let {rhombus, center} = rhomb;
 				center = new Vector(center.x, center.y);
 				rhombus = Rhombus.fromJson(rhombus);
-				this.coordRhomb[coord] = {index, neighbors, rhombus, center, base};
+				(outside ? this.outsideNeighbours : this.coordRhomb)[coord] = {index, neighbors, rhombus, center, base, tri1, tri2};
 			}
-			this.outsideNeighbours = {}; // put them in same map with a flag?
 		}
 		else {
 			const before = performance.now();
 			const penrose = calculatePenroseTiling(this.width * this.height, 1000, 1000, 'square', 'X', 'cull');
 			this.coordRhomb = penrose.p3Rhombuses;
-			this.outsideNeighbours = penrose.outsideNeighbors;
+			this.outsideNeighbours = Object.fromEntries(Array.from(penrose.outsideNeighbors.entries(), ([key, value]) => [key, {...value, outside: true}]))
 			console.log('calculatePenrose took', performance.now() - before, 'ms', Object.keys(this.coordRhomb).length, 'tiles');
 		}
 		this.p3rhombs = Object.values(this.coordRhomb);
@@ -153,7 +154,10 @@ export class PenroseGrid extends AbstractGrid {
 	}
 
 	getState() {
-		return this.coordRhomb;
+		return Object.fromEntries([
+			...Object.entries(this.coordRhomb),
+			...Object.entries(outsideNeighbours)
+		]);
 	}
 
 	getSymbolEnd(rhombus, center, base, dirind, portion) {
@@ -201,7 +205,18 @@ export class PenroseGrid extends AbstractGrid {
 					({center: neicenter} = this.p3rhombs[neighbour]);
 					symbend = this.getTileSymbolEnd(neighbour, oppositeDirection, symbol_portion);
 				} else {
-					return null;
+					// they all have the same directions
+					const dirind = this.polygon_at(0).direction_to_index.get(direction);
+					const tricoords = this.p3rhombs[index].rhombus.coord.split(',');
+					const tricoord = tricoords[+(dirind > 1)];
+					const side = dirind % 2;
+					const [neicoord, neiside] = tatham_neighbor(tricoord, side);
+					const foundNeighbours = Object.keys(this.outsideNeighbours).filter(key => key.split(',').includes(neicoord));
+					console.assert(foundNeighbours.length < 2);
+					if(!foundNeighbours.length)
+						return null; // some still unfound ?
+					let {rhombus, center, base} = this.outsideNeighbours[foundNeighbours[0][0]];
+					symbend = this.getSymbolEnd(rhombus, center, base, dirind, symbol_portion);
 				}
 				B = neicenter.add(symbend).subtract(center);
 			}
