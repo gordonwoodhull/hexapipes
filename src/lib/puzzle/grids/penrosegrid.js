@@ -7,7 +7,7 @@ import {
 	Vector,
 	Triangle,
 	Rhombus,
-	tatham_neighbor
+	tatham_neighbor_or_null
 } from './penrose-fill-polygon';
 
 const DIRA = 1;
@@ -114,7 +114,7 @@ export class PenroseGrid extends AbstractGrid {
 				let {rhombus, center} = rhomb;
 				center = new Vector(center.x, center.y);
 				rhombus = Rhombus.fromJson(rhombus);
-				(outside ? this.outsideNeighbours : this.coordRhomb)[coord] = {index, neighbors, rhombus, center, base, tri1, tri2};
+				(outside ? this.outsideNeighbours : this.coordRhomb)[coord] = {index, neighbors, rhombus, center, base, tri1, tri2, outside};
 			}
 		}
 		else {
@@ -210,7 +210,7 @@ export class PenroseGrid extends AbstractGrid {
 					const tricoords = this.p3rhombs[index].rhombus.coord.split(',');
 					const tricoord = tricoords[+(dirind > 1)];
 					const side = dirind % 2;
-					const [neicoord, neiside] = tatham_neighbor(tricoord, side);
+					const [neicoord, neiside] = tatham_neighbor_or_null(tricoord, side);
 					const foundNeighbours = Object.keys(this.outsideNeighbours).filter(key => key.split(',').includes(neicoord));
 					console.assert(foundNeighbours.length < 2);
 					if(!foundNeighbours.length)
