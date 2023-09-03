@@ -156,7 +156,7 @@ export class PenroseGrid extends AbstractGrid {
 	getState() {
 		return Object.fromEntries([
 			...Object.entries(this.coordRhomb),
-			...Object.entries(outsideNeighbours)
+			...Object.entries(this.outsideNeighbours)
 		]);
 	}
 
