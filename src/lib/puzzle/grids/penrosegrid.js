@@ -196,14 +196,13 @@ export class PenroseGrid extends AbstractGrid {
 			const A = this.getTileSymbolEnd(index, direction, symbol_portion);
 			let B;
 			if(symbol_portion < 1) {
-				let neicenter, symbend;
 				if (neighbour !== -1) {
-					({center: neicenter} = this.p3rhombs[neighbour]);
-					symbend = this.getTileSymbolEnd(neighbour, oppositeDirection, symbol_portion);
+					const {center: neicenter} = this.p3rhombs[neighbour];
+					const symbend = this.getTileSymbolEnd(neighbour, oppositeDirection, symbol_portion);
+					B = neicenter.add(symbend).subtract(center);
 				} else {
-					return null;
+					B = A.multiply(2 / symbol_portion);
 				}
-				B = neicenter.add(symbend).subtract(center);
 			}
 			let points;
 			if(symbol_portion < 1) {
