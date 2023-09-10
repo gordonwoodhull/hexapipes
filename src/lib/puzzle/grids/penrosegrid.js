@@ -7,7 +7,7 @@ import {
 	Vector,
 	Triangle,
 	Rhombus,
-	tatham_neighbor_or_null
+	tatham_neighbor
 } from './penrose-fill-polygon';
 
 const DIRA = 1;
@@ -210,13 +210,23 @@ export class PenroseGrid extends AbstractGrid {
 					const tricoords = this.p3rhombs[index].rhombus.coord.split(',');
 					const tricoord = tricoords[+(dirind > 1)];
 					const side = dirind % 2;
-					const [neicoord, neiside] = tatham_neighbor_or_null(tricoord, side);
+					let neicoord, neiside;
+					try {
+						[neicoord, neiside] = tatham_neighbor(tricoord, side);
+					}
+					catch(xep) {
+						console.warn('no neighbor', side, 'for', coord);
+						return null;
+					}
 					const foundNeighbours = Object.keys(this.outsideNeighbours).filter(key => key.split(',').includes(neicoord));
 					console.assert(foundNeighbours.length < 2);
 					if(!foundNeighbours.length)
 						return null; // some still unfound ?
-					let {rhombus, center, base} = this.outsideNeighbours[foundNeighbours[0][0]];
-					symbend = this.getSymbolEnd(rhombus, center, base, dirind, symbol_portion);
+					const is_first = neicoord === foundNeighbours[0].split(',')[0];
+					const neidirind = is_first*2 + neiside;
+					let rhombus, base;
+					({rhombus, center: neicenter, base} = this.outsideNeighbours[foundNeighbours[0]]);
+					symbend = this.getSymbolEnd(rhombus, center, base, neidirind, symbol_portion);
 				}
 				B = neicenter.add(symbend).subtract(center);
 			}
@@ -238,7 +248,6 @@ export class PenroseGrid extends AbstractGrid {
 			} else {
 				path = points.map((p, i) => `L ${p.x} ${p.y}`).join(' ');
 			}
-			console.log('gpp', path);
 			return path;
 		})].filter(x => x).join(' ');
 	}

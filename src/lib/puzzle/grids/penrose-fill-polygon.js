@@ -610,7 +610,7 @@ export function calculatePenroseTiling(minTiles, width, height, boundsShape, sta
                 if(nei && !tri2rhomb[nei]) {
                     const oh = tatham_neighbor_or_null(nei, 0);
                     if(oh)
-                        outsideNeighborCoords.push([tri.coord,oh].sort().join(','));
+                        outsideNeighborCoords.push([nei,oh].sort().join(','));
                 }
                 const rhombnei = nei && tri2rhomb[nei] || null;
                 neighbors.push(rhombnei);
@@ -727,7 +727,7 @@ export function calculatePenroseTiling(minTiles, width, height, boundsShape, sta
         console.log('not found', nf);
     for(const base of range(10))
         if(!bases_found.has(base))
-            console.log('unused', base_to_key[base]);
+            console.log('unused base', base, base_to_key[base]);
     
     return {
         center, r,
