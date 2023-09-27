@@ -45,7 +45,6 @@
 	let puzzle;
 
 	let grid = createGrid(gridKind, width, height, wrap);
-
 	/** @type {import('$lib/puzzle/game').Progress|undefined} */
 	let savedProgress;
 	/** @type {Number|undefined}*/
@@ -93,7 +92,7 @@
 		let branchingAmount = 0.6;
 		let avoidObvious = 0;
 		let avoidStraights = 0;
-		if (gridKind === 'square' || gridKind === 'etrat' || gridKind === 'cube') {
+		if (gridKind === 'square' || gridKind === 'etrat' || gridKind === 'cube' || gridKind === 'penrose') {
 			branchingAmount = Math.random() * 0.5 + 0.5; // 0.5 to 1
 			avoidObvious = Math.random() * 0.5 + 0.1; // 0.1 to 0.6
 			avoidStraights = Math.random() * 0.5 + 0.25; // 0.25 to 0.75
@@ -128,20 +127,23 @@
 	 */
 	function onGenerated(event) {
 		tiles = event.detail.tiles;
+		if (grid.initialize) grid.initialize(event.detail.grid);
 		genId += 1;
-		window.localStorage.setItem(instanceStoreName, JSON.stringify({ tiles: tiles }));
+		window.localStorage.setItem(instanceStoreName, JSON.stringify({ tiles: tiles, grid: event.detail.grid }));
 	}
 
 	onMount(() => {
 		if (puzzleId === -1) {
 			const instance = window.localStorage.getItem(instanceStoreName);
 			if (instance !== null) {
-				tiles = JSON.parse(instance).tiles;
+				let gridState;
+				({grid: gridState, tiles} = JSON.parse(instance));
 				// if the grid was refactored and handles size differently
 				// then ignore the previously saved instance
 				if (tiles.length !== grid.total) {
 					tiles = [];
 				}
+				if (grid.initialize) grid.initialize(gridState);
 			}
 		}
 		solved = false;

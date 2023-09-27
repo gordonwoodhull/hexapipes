@@ -77,7 +77,7 @@ export class AbstractGrid {
 	 * Finds neighbour of tile at index in a certain direction
 	 * @param {Number} index
 	 * @param {Number} direction
-	 * @returns {{neighbour: Number, empty: boolean}} - neighbour index, is the neighbour an empty cell or outside the board
+	 * @returns {{neighbour: Number, empty: boolean, oppositeDirection: Number}} - neighbour index, is the neighbour an empty cell or outside the board
 	 */
 	find_neighbour(index, direction) {
 		throw 'Implement find_neighbour(index, direction) method';
@@ -160,11 +160,21 @@ export class AbstractGrid {
 	}
 
 	/**
+	 * Clipping path for svg pipes
+	 * @param {Number} index
+	 * @returns {String}
+	 */
+	getClipPath(index) {
+		return this.polygon_at(index).clip_path;
+	}
+
+	/**
 	 * Pipes lines path
 	 * @param {Number} tile
 	 * @param {Number} index
+	 * @param {Number} rotations
 	 */
-	getPipesPath(tile, index) {
+	getPipesPath(tile, index, rotations) {
 		return this.polygon_at(index).get_pipes_path(tile);
 	}
 

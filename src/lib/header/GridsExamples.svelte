@@ -2,14 +2,19 @@
 	import { page } from '$app/stores';
 	import { gridKinds, gridInfo } from '$lib/puzzle/grids/grids';
 	import ExamplePuzzle from './ExamplePuzzle.svelte';
+
+	function initializeGrid(exampleGrid, gridData) {
+		if (gridData) exampleGrid.initialize(gridData);
+		return exampleGrid;
+	}
 </script>
 
 <div class="grids">
 	{#each gridKinds as gridKind}
-		{@const { url, title, exampleGrid, exampleTiles, sizes } = gridInfo[gridKind]}
+		{@const { url, title, exampleGrid, gridData, exampleTiles, sizes } = gridInfo[gridKind]}
 		<a href="/{url}/{sizes[0]}" class:active={$page.url.pathname.startsWith(`/${url}/`)}>
 			{title}
-			<ExamplePuzzle grid={exampleGrid} tiles={exampleTiles} />
+			<ExamplePuzzle grid={initializeGrid(exampleGrid, gridData)} tiles={exampleTiles} />
 		</a>
 	{/each}
 </div>

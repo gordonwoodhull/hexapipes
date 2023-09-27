@@ -2,6 +2,7 @@
 	import { settings } from '$lib/stores';
 	import { controls } from '$lib/puzzle/controls';
 	import Tile from '$lib/puzzle/Tile.svelte';
+	import ClipPolygon from '$lib/puzzle/ClipPolygon.svelte';
 	import { onMount, onDestroy, createEventDispatcher, tick } from 'svelte';
 	import { PipesGame } from '$lib/puzzle/game';
 	import { Solver } from './solver';
@@ -330,6 +331,15 @@
 		on:contextmenu|preventDefault={() => {}}
 		on:save={save.soon}
 	>
+		<defs> 
+			{#each Array(game.grid.total) as _, index (index)}
+				<ClipPolygon
+					i={index}
+					id={'clip-path-' + index}
+					grid={game.grid}
+				/>
+			{/each}
+		</defs>
 		{#each $visibleTiles as visibleTile, i (visibleTile.key)}
 			<Tile
 				i={visibleTile.index}
