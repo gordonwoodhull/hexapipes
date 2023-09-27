@@ -5,13 +5,15 @@ import { EtratGrid } from '$lib/puzzle/grids/etratgrid';
 import { CubeGrid } from '$lib/puzzle/grids/cubegrid';
 import { TrihexaGrid } from '$lib/puzzle/grids/trihexagrid';
 import { SnubSquareGrid } from './snubsquaregrid';
+import { PenroseGrid } from '$lib/puzzle/grids/penrosegrid.js';
+import penrose_grid_data from '$lib/puzzle/grids/penrose-grid-data.json';
 
 /**
- * @typedef {'hexagonal'|'square'|'octagonal'|'etrat'|'cube'|'trihexagonal'|'snubsquare'} GridKind
+ * @typedef {'hexagonal'|'square'|'octagonal'|'etrat'|'cube'|'trihexagonal'|'snubsquare'|'penrose'} GridKind
  */
 
 /**
- * @typedef {'hexagonal'|'hexagonal-wrap'|'square'|'square-wrap'|'octagonal'|'octagonal-wrap'|'etrat'|'etrat-wrap'|'cube'|'cube-wrap'|'trihexagonal'|'trihexagonal-wrap'|'snubsquare'|'snubsquare-wrap'} GridCategory
+ * @typedef {'hexagonal'|'hexagonal-wrap'|'square'|'square-wrap'|'octagonal'|'octagonal-wrap'|'etrat'|'etrat-wrap'|'cube'|'cube-wrap'|'trihexagonal'|'trihexagonal-wrap'|'snubsquare'|'snubsquare-wrap'|'penrose'} GridCategory
  */
 
 /**
@@ -48,6 +50,8 @@ export function createGrid(kind, width, height, wrap, tiles = undefined) {
 		grid = new TrihexaGrid(width, height, wrap, tiles);
 	} else if (kind === 'snubsquare') {
 		grid = new SnubSquareGrid(width, height, wrap, tiles);
+	} else if (kind === 'penrose') {
+		grid = new PenroseGrid(width, height, wrap, tiles);
 	} else {
 		throw `Unknown grid kind ${kind}`;
 	}
@@ -62,7 +66,8 @@ export const gridKinds = [
 	'etrat',
 	'cube',
 	'trihexagonal',
-	'snubsquare'
+	'snubsquare',
+	'penrose'
 ];
 
 export const gridInfo = {
@@ -120,8 +125,17 @@ export const gridInfo = {
 		title: 'Snub Square',
 		url: 'snubsquare',
 		wrap: true,
-		exampleGrid: new SnubSquareGrid(4, 4, false),
+		exampleGrid: () => new SnubSquareGrid(4, 4, false),
 		exampleTiles: [2, 4, 5, 12, 5, 4, 7, 5, 12, 5, 6, 4, 14, 7, 5, 5, 6, 0, 11, 5, 1, 9, 3, 1],
+		sizes: [5, 7, 10, 15, 20, 30, 40]
+    },
+	penrose: {
+		title: 'Penrose',
+		url: 'penrose',
+		wrap: false,
+		exampleGrid: new PenroseGrid(3, 3, false),
+		gridData: penrose_grid_data,
+		exampleTiles: [4, 12, 6, 12, 11, 8, 3, 1, 12, 12, 8, 13, 3],
 		sizes: [5, 7, 10, 15, 20, 30, 40]
 	}
 };

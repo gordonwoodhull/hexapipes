@@ -24,6 +24,7 @@
 					$page.url.pathname.startsWith('/cube') ||
 					$page.url.pathname.startsWith('/trihexagonal') ||
 					$page.url.pathname.startsWith('/snubsquare') ||
+					$page.url.pathname.startsWith('/penrose') ||
 					$page.url.pathname.startsWith('/custom') ||
 					$page.url.pathname.startsWith('/play')}
 			>

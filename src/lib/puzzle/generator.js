@@ -261,7 +261,10 @@ export class Generator {
 				if ((direction & connections) > 0) {
 					continue;
 				}
-				const { neighbour, empty } = this.grid.find_neighbour(fromNode, direction);
+				const { neighbour, empty, oppositeDirection } = this.grid.find_neighbour(
+					fromNode,
+					direction
+				);
 				if (empty || !unvisited.has(neighbour)) {
 					continue;
 				}
@@ -271,26 +274,25 @@ export class Generator {
 					(tiles[neighbour] > 0 &&
 						this.grid
 							.polygon_at(neighbour)
-							.tileTypes.get(tiles[neighbour] + (this.grid.OPPOSITE.get(direction) || 0))
-							?.isFullyConnected)
+							.tileTypes.get(tiles[neighbour] + (oppositeDirection || 0))?.isFullyConnected)
 				) {
-					fullyConnectedNeighbours.push({ neighbour, direction });
+					fullyConnectedNeighbours.push({ neighbour, direction, oppositeDirection });
 					continue;
 				}
 				if (tileForbidden.has(fromNode) && Math.random() < avoidObvious) {
 					const nogo = tileForbidden.get(fromNode);
 					if (nogo?.has(tiles[fromNode] + direction)) {
-						obviousNeighbours.push({ neighbour, direction });
+						obviousNeighbours.push({ neighbour, direction, oppositeDirection });
 						continue;
 					}
 				}
 				if (polygon.tileTypes.get(connections + direction)?.isStraight) {
 					if (Math.random() < avoidStraights) {
-						straightNeighbours.push({ neighbour, direction });
+						straightNeighbours.push({ neighbour, direction, oppositeDirection });
 						continue;
 					}
 				}
-				unvisitedNeighbours.push({ neighbour, direction });
+				unvisitedNeighbours.push({ neighbour, direction, oppositeDirection });
 			}
 			let toVisit = null;
 			let source = null;
@@ -316,7 +318,12 @@ export class Generator {
 				} else {
 					array.pop();
 				}
-				continue;
+				if (visited.length === 0 && avoiding.length === 0 && lastResortNodes.length === 0) {
+					console.warn('Grid problem: unreachable tiles:', [...unvisited]);
+					break;
+				} else {
+					continue;
+				}
 			}
 			if (source === fullyConnectedNeighbours) {
 				// wants to become fully connected, this is a last resort action
@@ -346,7 +353,7 @@ export class Generator {
 					visited.push(i);
 				}
 			}
-			tiles[toVisit.neighbour] += this.grid.OPPOSITE.get(toVisit.direction) || 0;
+			tiles[toVisit.neighbour] += toVisit.oppositeDirection || 0;
 			unvisited.delete(toVisit.neighbour);
 			visited.push(toVisit.neighbour);
 		}

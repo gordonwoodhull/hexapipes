@@ -92,19 +92,8 @@ export class RegularPolygonTile {
 		}
 
 		// draw tile contour
-		let angle = angle_offset - this.angle_unit / 2;
-		const r = this.radius_out - border_width;
-		this.contour_path = `m ${r * Math.cos(angle)} ${-r * Math.sin(angle)}`;
-		this.vertices = [];
-		for (let i = 1; i <= this.num_directions; i++) {
-			angle += this.angle_unit;
-			this.contour_path += ` L ${r * Math.cos(angle)} ${-r * Math.sin(angle)}`;
-			this.vertices.push({
-				x: this.radius_out * Math.cos(angle),
-				y: -this.radius_out * Math.sin(angle)
-			});
-		}
-		this.contour_path += ' z';
+		({path: this.contour_path, vertices: this.vertices} = this.polygon_path(this.radius_out - border_width));
+		this.clip_path = this.polygon_path(this.radius_out + border_width/2).path;
 
 		// caches for frequently recomputed values
 		this.cache = {
@@ -114,6 +103,22 @@ export class RegularPolygonTile {
 			edgemark_line: new Map(),
 			wall_line: new Map()
 		};
+	}
+
+	polygon_path(r) {
+		let angle = this.angle_offset - this.angle_unit / 2;
+		let path = `m ${r * Math.cos(angle)} ${-r * Math.sin(angle)}`;
+		let vertices = [];
+		for (let i = 1; i <= this.num_directions; i++) {
+			angle += this.angle_unit;
+			path += ` L ${r * Math.cos(angle)} ${-r * Math.sin(angle)}`;
+			vertices.push({
+				x: this.radius_out * Math.cos(angle),
+				y: -this.radius_out * Math.sin(angle)
+			});
+		}
+		path += ' z';
+		return {path, vertices};
 	}
 
 	/**
@@ -194,8 +199,9 @@ export class RegularPolygonTile {
 		this.directions.forEach((direction, index) => {
 			if ((direction & tile) > 0) {
 				const angle = this.angle_offset + this.angle_unit * index;
-				const dx = this.radius_in * Math.cos(angle);
-				const dy = this.radius_in * Math.sin(angle);
+				const radius = this.radius_in * 1.2;
+				const dx = radius * Math.cos(angle);
+				const dy = radius * Math.sin(angle);
 				path += ` l ${dx} ${-dy} L 0 0`;
 			}
 		});
@@ -485,7 +491,7 @@ export class TransformedPolygonTile extends RegularPolygonTile {
 	 * @param {Number} angle_offset
 	 * @param {Number} radius_in
 	 * @param {Number[]} directions
-	 * @param {Number} border_width
+	 * @param {Number} <border_width
 	 * @param {Number} scale_x
 	 * @param {Number} scale_y
 	 * @param {Number} skew_x

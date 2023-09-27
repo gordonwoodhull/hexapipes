@@ -17,7 +17,7 @@
 	let avoidStraights = 0.0;
 	let autosolve = false;
 	/** @type {import('$lib/puzzle/generator').SolutionsNumber}*/
-	let solutionsNumber = 'unique';
+	let solutionsNumber = 'whatever';
 	let errorMessage = '';
 
 	/** @type {import('$lib/puzzle/Puzzle.svelte').default}*/
@@ -169,6 +169,21 @@
 	<div style="margin-bottom: 0.5em">
 		<label>
 			Grid type
+			<label for="hexagonal">
+				<input type="radio" bind:group={gridKind} id="hexagonal" value="hexagonal" /> Hexagonal
+			</label>
+			<label for="square">
+				<input type="radio" bind:group={gridKind} id="square" value="square" /> Square
+			</label>
+			<label for="octagonal">
+				<input type="radio" bind:group={gridKind} id="octagonal" value="octagonal" /> Octagonal
+			</label>
+			<label for="etrat">
+				<input type="radio" bind:group={gridKind} id="etrat" value="etrat" /> Elongated triangular
+			</label>
+			<label for="cube">
+				<input type="radio" bind:group={gridKind} id="cube" value="cube" /> Cube
+			</label>
 			<select bind:value={gridKind}>
 				{#each gridKinds as item}
 					<option value={item}>
@@ -176,6 +191,24 @@
 					</option>
 				{/each}
 			</select>
+			<label for="hexagonal">
+				<input type="radio" bind:group={gridKind} id="hexagonal" value="hexagonal" /> Hexagonal
+			</label>
+			<label for="square">
+				<input type="radio" bind:group={gridKind} id="square" value="square" /> Square
+			</label>
+			<label for="octagonal">
+				<input type="radio" bind:group={gridKind} id="octagonal" value="octagonal" /> Octagonal
+			</label>
+			<label for="etrat">
+				<input type="radio" bind:group={gridKind} id="etrat" value="etrat" /> Elongated triangular
+			</label>
+			<label for="cube">
+				<input type="radio" bind:group={gridKind} id="cube" value="cube" /> Cube
+			</label>
+			<label for="penrose">
+				<input type="radio" bind:group={gridKind} id="penrose" value="penrose" /> Penrose
+			</label>
 		</label>
 	</div>
 	<label for="width">
