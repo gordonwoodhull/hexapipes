@@ -61,6 +61,10 @@ export class AbstractGrid {
 		this.YMAX = height;
 	}
 
+	getState() {
+		return {};
+	}
+
 	/**
 	 * Determines which tile a point at (x, y) belongs to
 	 * Returns tile index and tile center coordinates
