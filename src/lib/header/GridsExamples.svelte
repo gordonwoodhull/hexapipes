@@ -14,7 +14,7 @@
 		{@const { url, title, exampleGrid, gridData, exampleTiles, sizes } = gridInfo[gridKind]}
 		<a href="/{url}/{sizes[0]}" class:active={$page.url.pathname.startsWith(`/${url}/`)}>
 			{title}
-			<ExamplePuzzle grid={initializeGrid(exampleGrid, gridData)} tiles={exampleTiles} />
+			<ExamplePuzzle grid={initializeGrid(exampleGrid(), gridData)} tiles={exampleTiles} />
 		</a>
 	{/each}
 </div>
