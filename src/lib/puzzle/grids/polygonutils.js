@@ -93,7 +93,7 @@ export class RegularPolygonTile {
 
 		// draw tile contour
 		this.contour_path = this.polygon_path(this.radius_out - border_width);
-		this.clip_path = this.polygon_path(this.radius_out + border_width/2);
+		this.clip_path = this.polygon_path(this.radius_out + border_width / 2);
 
 		// caches for frequently recomputed values
 		this.cache = {

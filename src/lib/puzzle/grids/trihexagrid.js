@@ -236,7 +236,11 @@ export class TrihexaGrid extends AbstractGrid {
 			un = fishSwimsLeft ? (direction === NORTHWEST ? 1 : 2) : 0;
 		}
 		const neighbour = this._fish_to_index(rn, fn, un);
-		return { neighbour, empty: neighbour === -1 || this.emptyCells.has(neighbour), oppositeDirection };
+		return {
+			neighbour,
+			empty: neighbour === -1 || this.emptyCells.has(neighbour),
+			oppositeDirection
+		};
 	}
 
 	/**

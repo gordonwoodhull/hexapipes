@@ -74,11 +74,7 @@
 	/>
 
 	<!-- Pipe shape -->
-	<g
-		class="pipe"
-		style="transform: {pipe_transform}"
-		clip-path="url(#clip-path-{i})"
-	>
+	<g class="pipe" style="transform: {pipe_transform}" clip-path="url(#clip-path-{i})">
 		<!-- Pipe outline -->
 		<path
 			d={path}

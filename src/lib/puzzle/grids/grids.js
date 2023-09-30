@@ -56,7 +56,15 @@ export function createGrid(kind, width, height, wrap, tiles = undefined) {
 }
 
 /** @type {GridKind[]} */
-export const gridKinds = ['hexagonal', 'square', 'octagonal', 'etrat', 'cube', 'trihexagonal', 'penrose'];
+export const gridKinds = [
+	'hexagonal',
+	'square',
+	'octagonal',
+	'etrat',
+	'cube',
+	'trihexagonal',
+	'penrose'
+];
 
 export const gridInfo = {
 	hexagonal: {
@@ -115,21 +123,7 @@ export const gridInfo = {
 		wrap: false,
 		exampleGrid: () => new PenroseGrid(3, 3, false),
 		gridData: penrose_grid_data,
-		exampleTiles: [
-			4,
-			12,
-			6,
-			12,
-			11,
-			8,
-			3,
-			1,
-			12,
-			12,
-			8,
-			13,
-			3
-		],
+		exampleTiles: [4, 12, 6, 12, 11, 8, 3, 1, 12, 12, 8, 13, 3],
 		sizes: [5, 7, 10, 15, 20, 30, 40]
 	}
 };
