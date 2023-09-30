@@ -38,11 +38,7 @@
 	>
 		<defs>
 			{#each Array(grid.total) as _, index (index)}
-				<ClipPolygon
-					i={index}
-					id={[grid.KIND,'clip','path',index].join('-')}
-					grid={grid}
-				/>
+				<ClipPolygon i={index} id={[grid.KIND, 'clip', 'path', index].join('-')} {grid} />
 			{/each}
 		</defs>
 		{#each visibleTiles as visibleTile, i (visibleTile.key)}

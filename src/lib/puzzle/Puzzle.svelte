@@ -331,13 +331,9 @@
 		on:contextmenu|preventDefault={() => {}}
 		on:save={save.soon}
 	>
-		<defs> 
+		<defs>
 			{#each Array(game.grid.total) as _, index (index)}
-				<ClipPolygon
-					i={index}
-					id={'clip-path-' + index}
-					grid={game.grid}
-				/>
+				<ClipPolygon i={index} id={'clip-path-' + index} grid={game.grid} />
 			{/each}
 		</defs>
 		{#each $visibleTiles as visibleTile, i (visibleTile.key)}

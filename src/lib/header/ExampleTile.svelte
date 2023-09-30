@@ -34,7 +34,7 @@
 	<g
 		class="pipe"
 		style="transform: {tile_transform}"
-		clip-path="url(#{[grid.KIND,'clip','path',i].join('-')})"
+		clip-path="url(#{[grid.KIND, 'clip', 'path', i].join('-')})"
 	>
 		<!-- Pipe outline -->
 		<path

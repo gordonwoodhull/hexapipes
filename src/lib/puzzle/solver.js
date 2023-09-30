@@ -473,7 +473,10 @@ export function Solver(tiles, grid) {
 			if (addedWalls > 0) {
 				for (let direction of polygon.directions) {
 					if ((direction & addedWalls) > 0) {
-						const { neighbour, empty, oppositeDirection } = self.grid.find_neighbour(index, direction);
+						const { neighbour, empty, oppositeDirection } = self.grid.find_neighbour(
+							index,
+							direction
+						);
 						if (empty) {
 							continue;
 						}
@@ -488,7 +491,10 @@ export function Solver(tiles, grid) {
 			if (addedConnections > 0) {
 				for (let direction of polygon.directions) {
 					if ((direction & addedConnections) > 0) {
-						const { neighbour, empty, oppositeDirection } = self.grid.find_neighbour(index, direction);
+						const { neighbour, empty, oppositeDirection } = self.grid.find_neighbour(
+							index,
+							direction
+						);
 						if (empty) {
 							throw 'Trying to connect to an empty neighbour!';
 						}
