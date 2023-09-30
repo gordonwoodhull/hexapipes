@@ -161,13 +161,14 @@ export class TrihexaGrid extends AbstractGrid {
 	/**
 	 * @param {Number} index
 	 * @param {Number} direction
-	 * @returns {{neighbour: Number, empty: boolean}} - neighbour index, is the neighbour an empty cell or outside the board
+	 * @returns {{neighbour: Number, empty: boolean, oppositeDirection: Number}} - neighbour index, is the neighbour an empty cell or outside the board
 	 */
 	find_neighbour(index, direction) {
 		// const polygon = this.polygon_at(index);
 		// if (polygon.directions.every((d) => d !== direction)) {
 		// 	return { neighbour: -1, empty: true };
 		// }
+		const oppositeDirection = this.OPPOSITE.get(direction);
 		const unitIndex = index % 3;
 		const fishIndex = (index - unitIndex) / 3;
 		const r = Math.floor(fishIndex / this.w);
@@ -178,20 +179,20 @@ export class TrihexaGrid extends AbstractGrid {
 			if (fishSwimsLeft) {
 				if (direction === NORTHEAST) {
 					const neighbour = index + 1;
-					return { neighbour, empty: this.emptyCells.has(neighbour) };
+					return { neighbour, empty: this.emptyCells.has(neighbour), oppositeDirection };
 				}
 				if (direction === SOUTHEAST) {
 					const neighbour = index + 2;
-					return { neighbour, empty: this.emptyCells.has(neighbour) };
+					return { neighbour, empty: this.emptyCells.has(neighbour), oppositeDirection };
 				}
 			} else {
 				if (direction === NORTHWEST) {
 					const neighbour = index + 1;
-					return { neighbour, empty: this.emptyCells.has(neighbour) };
+					return { neighbour, empty: this.emptyCells.has(neighbour), oppositeDirection };
 				}
 				if (direction === SOUTHWEST) {
 					const neighbour = index + 2;
-					return { neighbour, empty: this.emptyCells.has(neighbour) };
+					return { neighbour, empty: this.emptyCells.has(neighbour), oppositeDirection };
 				}
 			}
 		} else if (unitIndex === 1) {
@@ -200,7 +201,7 @@ export class TrihexaGrid extends AbstractGrid {
 				(direction === SOUTHEAST && !fishSwimsLeft)
 			) {
 				const neighbour = index - 1;
-				return { neighbour, empty: this.emptyCells.has(neighbour) };
+				return { neighbour, empty: this.emptyCells.has(neighbour), oppositeDirection };
 			}
 		} else if (unitIndex === 2) {
 			if (
@@ -208,7 +209,7 @@ export class TrihexaGrid extends AbstractGrid {
 				(direction === NORTHEAST && !fishSwimsLeft)
 			) {
 				const neighbour = index - 2;
-				return { neighbour, empty: this.emptyCells.has(neighbour) };
+				return { neighbour, empty: this.emptyCells.has(neighbour), oppositeDirection };
 			}
 		}
 		// go to a neighbour fish
@@ -235,7 +236,7 @@ export class TrihexaGrid extends AbstractGrid {
 			un = fishSwimsLeft ? (direction === NORTHWEST ? 1 : 2) : 0;
 		}
 		const neighbour = this._fish_to_index(rn, fn, un);
-		return { neighbour, empty: neighbour === -1 || this.emptyCells.has(neighbour) };
+		return { neighbour, empty: neighbour === -1 || this.emptyCells.has(neighbour), oppositeDirection };
 	}
 
 	/**
