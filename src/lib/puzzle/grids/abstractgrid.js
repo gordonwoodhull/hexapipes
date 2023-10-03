@@ -245,6 +245,14 @@ export class AbstractGrid {
 		const dy = y - tileY;
 		return this.polygon_at(tileIndex).is_close_to_edge(dx, dy);
 	}
+	
+	/**
+	 * Queries if a feature flag is enabled for this grid
+	 * @param {String} flagName
+	 */
+	getGridFlag(flagName) {
+		return false;
+	}
 
 	/**
 	 * Exports the grid's data
