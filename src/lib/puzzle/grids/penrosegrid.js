@@ -169,6 +169,15 @@ export class PenroseGrid extends AbstractGrid {
 		return this.coordRhomb;
 	}
 
+	/**
+	 * Queries if a feature flag is enabled for this grid
+	 * @param {String} flagName
+	 */
+	getGridFlag(flagName) {
+		return flagName == 'ARMS_ROTATION';
+	}
+	
+
 	getSymbolEnd(rhombus, center, base, dirind, portion) {
 		const points = rhombus.getPoints().reverse();
 		// this shouldn't be necessary; all rhomb points should consistently start with side 0

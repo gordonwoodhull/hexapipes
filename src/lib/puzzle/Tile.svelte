@@ -17,6 +17,7 @@
 	const disconnectStrokeWidthScale = game.disconnectStrokeWidthScale;
 	const disconnectStrokeColor = game.disconnectStrokeColor;
 	const guideDotRadius = game.grid.GUIDE_DOT_RADIUS;
+	const useArmsRotation = game.grid.getGridFlag('ARMS_ROTATION');
 
 	let bgColor = '#aaa';
 	let strokeColor = '#888';
@@ -33,7 +34,7 @@
 	const isSink = myDirections.length === 1;
 
 	const tile_transform = game.grid.getTileTransformCSS(i) || '';
-	const pipe_transform = '';
+	let pipe_rotate = '';
 	/**
 	 * Choose tile background color
 	 * @param {Boolean} locked
@@ -58,6 +59,7 @@
 		strokeWidth = game.grid.STROKE_WIDTH;
 	}
 	$: path = game.grid.getPipesPath($state.tile, i, $state.rotations);
+	$: pipe_rotate = useArmsRotation ? '' : `rotate(${game.grid.getAngle($state.rotations, i)}rad)`;
 	$: chooseBgColor($state.locked, $state.isPartOfLoop);
 	$: outlineWidth = 2 * strokeWidth + game.grid.PIPE_WIDTH;
 	$: style = game.grid.polygon_at(i).style || undefined;
@@ -74,7 +76,7 @@
 	/>
 
 	<!-- Pipe shape -->
-	<g class="pipe" style="transform: {pipe_transform}" clip-path="url(#clip-path-{i})">
+	<g class="pipe" class:tileRotation={!useArmsRotation} style="transform: {pipe_rotate}" clip-path="url(#clip-path-{i})">
 		<!-- Pipe outline -->
 		<path
 			d={path}
@@ -82,6 +84,7 @@
 			stroke-width={outlineWidth}
 			stroke-linejoin="bevel"
 			stroke-linecap="round"
+			class:armsRotation={useArmsRotation}
 		/>
 		<!-- Sink circle -->
 		{#if isSink}
@@ -103,6 +106,7 @@
 			stroke-width={pipeWidth}
 			stroke-linejoin={game.grid.LINE_JOIN}
 			stroke-linecap="round"
+			class:armsRotation={useArmsRotation}
 		/>
 		{#if controlMode === 'orient_lock' && !$state.locked && !solved}
 			<!-- Guide dot -->
@@ -120,13 +124,25 @@
 </g>
 
 <style>
-	:global(.animation-normal) .pipe path {
+	:global(.animation-normal) .pipe.tileRotation {
+	    transition: transform 100ms ease;
+	}
+	:global(.animation-fast) .pipe.tileRotation {
+		transition: transform 30ms ease;
+	}
+	:global(.animation-instant) .pipe.tileRotation {
+		transition: transform 0ms;
+	}
+	:global(.animation-normal) .pipe path.armsRotation {
 		transition: d 100ms ease;
 	}
-	:global(.animation-fast) .pipe path {
+	:global(.animation-fast) .pipe path.armsRotation {
 		transition: d 30ms ease;
 	}
-	:global(.animation-instant) .pipe path {
+	:global(.animation-instant) .pipe path.armsRotation {
 		transition: d 0ms;
 	}
 </style>
+
+
+	
