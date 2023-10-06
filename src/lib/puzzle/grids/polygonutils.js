@@ -34,15 +34,17 @@ export class RegularPolygonTile {
 	 * @param {Number} num_directions
 	 * @param {Number} angle_offset
 	 * @param {Number} radius_in
+	 * @param {Boolean} clip_tile_path
 	 * @param {Number[]} directions
 	 * @param {Number} border_width
 	 */
-	constructor(num_directions, angle_offset, radius_in, directions = [], border_width = 0.01) {
+	constructor(num_directions, angle_offset, radius_in, clip_tile_path = false, directions = [], border_width = 0.01) {
 		this.num_directions = num_directions;
 		this.angle_offset = angle_offset;
 		this.angle_unit = (Math.PI * 2) / num_directions;
 		this.radius_in = radius_in;
 		this.radius_out = radius_in / Math.cos(this.angle_unit / 2);
+		this.clip_tile_path = clip_tile_path;
 		this.side_length = 2 * this.radius_out * Math.sin(this.angle_unit / 2);
 		if (directions.length === num_directions) {
 			this.directions = [...directions];
@@ -93,7 +95,9 @@ export class RegularPolygonTile {
 
 		// draw tile contour
 		this.contour_path = this.polygon_path(this.radius_out - border_width);
-		this.clip_path = this.polygon_path(this.radius_out + border_width / 2);
+		if(clip_tile_path) {
+			this.clip_path = this.polygon_path(this.radius_out + border_width / 2);
+		}
 
 		// caches for frequently recomputed values
 		this.cache = {
@@ -194,7 +198,7 @@ export class RegularPolygonTile {
 		this.directions.forEach((direction, index) => {
 			if ((direction & tile) > 0) {
 				const angle = this.angle_offset + this.angle_unit * index;
-				const radius = this.radius_in * 1.2;
+				const radius = this.radius_in * (this.clip_tile_path ? 1.2 : 1);
 				const dx = radius * Math.cos(angle);
 				const dy = radius * Math.sin(angle);
 				path += ` l ${dx} ${-dy} L 0 0`;
@@ -460,8 +464,9 @@ export class TransformedPolygonTile extends RegularPolygonTile {
 	 * @param {Number} num_directions
 	 * @param {Number} angle_offset
 	 * @param {Number} radius_in
+	 * @param {Boolean} clip_tile_path
 	 * @param {Number[]} directions
-	 * @param {Number} <border_width
+	 * @param {Number} border_width
 	 * @param {Number} scale_x
 	 * @param {Number} scale_y
 	 * @param {Number} skew_x
@@ -473,6 +478,7 @@ export class TransformedPolygonTile extends RegularPolygonTile {
 		num_directions,
 		angle_offset,
 		radius_in,
+		clip_tile_path,
 		directions,
 		border_width,
 		scale_x,
@@ -482,7 +488,7 @@ export class TransformedPolygonTile extends RegularPolygonTile {
 		rotate_rad,
 		style
 	) {
-		super(num_directions, angle_offset, radius_in, directions, border_width);
+		super(num_directions, angle_offset, radius_in, clip_tile_path, directions, border_width);
 		scale_x = scale_x || 1;
 		scale_y = scale_y || 1;
 		skew_x = skew_x || 0;

@@ -12,10 +12,6 @@ const SQRT3 = Math.sqrt(3);
 const XSTEP = 1 / SQRT3;
 const TRIANGLE_RADIUS_IN = 1 / 6;
 
-const HEXAGON = new RegularPolygonTile(6, Math.PI / 6, 0.5);
-const UPTRIANGLE = new RegularPolygonTile(3, Math.PI / 6, TRIANGLE_RADIUS_IN, [1, 4, 16]);
-const DOWNTRIANGLE = new RegularPolygonTile(3, -Math.PI / 6, TRIANGLE_RADIUS_IN, [32, 2, 8]);
-
 export class TrihexaGrid extends AbstractGrid {
 	DIRECTIONS = [NORTHEAST, NORTH, NORTHWEST, SOUTHWEST, SOUTH, SOUTHEAST];
 	EDGEMARK_DIRECTIONS = [NORTHEAST, NORTH, NORTHWEST];
@@ -457,3 +453,7 @@ export class TrihexaGrid extends AbstractGrid {
 		}
 	}
 }
+
+const HEXAGON = new RegularPolygonTile(6, Math.PI / 6, 0.5, TrihexaGrid.getGridFlag('CLIP_TILE_POLYGON'));
+const UPTRIANGLE = new RegularPolygonTile(3, Math.PI / 6, TRIANGLE_RADIUS_IN, TrihexaGrid.getGridFlag('CLIP_TILE_POLYGON'), [1, 4, 16]);
+const DOWNTRIANGLE = new RegularPolygonTile(3, -Math.PI / 6, TRIANGLE_RADIUS_IN, TrihexaGrid.getGridFlag('CLIP_TILE_POLYGON'), [32, 2, 8]);

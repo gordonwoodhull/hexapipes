@@ -6,8 +6,6 @@ const NORTH = 2;
 const WEST = 4;
 const SOUTH = 8;
 
-const SQUARE = new RegularPolygonTile(4, 0, 0.5);
-
 /**
  * Square grid
  * @extends AbstractGrid
@@ -167,3 +165,5 @@ export class SquareGrid extends AbstractGrid {
 		return visibleTiles;
 	}
 }
+
+const SQUARE = new RegularPolygonTile(4, 0, 0.5, SquareGrid.getGridFlag('CLIP_TILE_POLYGON'));

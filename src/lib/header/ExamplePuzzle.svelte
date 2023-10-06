@@ -36,11 +36,13 @@
 		height={svgHeight}
 		viewBox="{viewBox.xmin} {viewBox.ymin} {viewBox.width} {viewBox.height}"
 	>
-		<defs>
-			{#each Array(grid.total) as _, index (index)}
-				<ClipPolygon i={index} id={[grid.KIND, 'clip', 'path', index].join('-')} {grid} />
-			{/each}
-		</defs>
+		{#if grid.constructor.getGridFlag('CLIP_TILE_POLYGON')}
+			<defs>
+				{#each Array(grid.total) as _, index (index)}
+					<ClipPolygon i={index} id={[grid.KIND, 'clip', 'path', index].join('-')} {grid} />
+				{/each}
+			</defs>
+		{/if}
 		{#each visibleTiles as visibleTile, i (visibleTile.key)}
 			<ExampleTile
 				{grid}

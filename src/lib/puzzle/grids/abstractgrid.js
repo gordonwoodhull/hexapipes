@@ -250,8 +250,10 @@ export class AbstractGrid {
 	 * Queries if a feature flag is enabled for this grid
 	 * @param {String} flagName
 	 */
-	getGridFlag(flagName) {
-		return false;
+	static getGridFlag(flagName) {
+		// This should be iOS() && flagName == 'CLIP_TILE_POLYGON'
+		// but there is no good way to define iOS() because SSR
+		return false; 
 	}
 
 	/**

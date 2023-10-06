@@ -17,12 +17,13 @@
 	const disconnectStrokeWidthScale = game.disconnectStrokeWidthScale;
 	const disconnectStrokeColor = game.disconnectStrokeColor;
 	const guideDotRadius = game.grid.GUIDE_DOT_RADIUS;
-	const useArmsRotation = game.grid.getGridFlag('ARMS_ROTATION');
+	const useArmsRotation = game.grid.constructor.getGridFlag('ARMS_ROTATION');
 
 	let bgColor = '#aaa';
 	let strokeColor = '#888';
 	let strokeWidth = game.grid.STROKE_WIDTH;
 	let outlineWidth = 2 * strokeWidth + game.grid.PIPE_WIDTH;
+	const clip_path = game.grid.constructor.getGridFlag('CLIP_TILE_POLYGON') ? `url(#clip-path-${i})` : null;
 
 	const myDirections = game.grid.getDirections($state.tile, 0, i);
 
@@ -76,7 +77,7 @@
 	/>
 
 	<!-- Pipe shape -->
-	<g class="pipe" class:tileRotation={!useArmsRotation} style="transform: {pipe_rotate}" clip-path="url(#clip-path-{i})">
+	<g class="pipe" class:tileRotation={!useArmsRotation} style="transform: {pipe_rotate}" clip-path={clip_path}>
 		<!-- Pipe outline -->
 		<path
 			d={path}

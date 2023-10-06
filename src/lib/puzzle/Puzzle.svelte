@@ -331,11 +331,13 @@
 		on:contextmenu|preventDefault={() => {}}
 		on:save={save.soon}
 	>
-		<defs>
-			{#each Array(game.grid.total) as _, index (index)}
-				<ClipPolygon i={index} id={'clip-path-' + index} grid={game.grid} />
-			{/each}
-		</defs>
+		{#if grid.constructor.getGridFlag('CLIP_TILE_POLYGON')}
+			<defs>
+				{#each Array(game.grid.total) as _, index (index)}
+					<ClipPolygon i={index} id={'clip-path-' + index} grid={game.grid} />
+				{/each}
+			</defs>
+		{/if}
 		{#each $visibleTiles as visibleTile, i (visibleTile.key)}
 			<Tile
 				i={visibleTile.index}

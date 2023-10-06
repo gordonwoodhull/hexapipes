@@ -11,10 +11,6 @@ const YSTEP = Math.sqrt(3) / 2 + 1;
 const HEXYSTEP = Math.sqrt(3) / 2;
 const TRIANGLE_RADIUS_IN = Math.sqrt(3) / 6;
 
-const SQUARE = new RegularPolygonTile(4, 0, 0.5);
-const UPTRIANGLE = new RegularPolygonTile(3, Math.PI / 6, TRIANGLE_RADIUS_IN, [1, 4, 8]);
-const DOWNTRIANGLE = new RegularPolygonTile(3, -Math.PI / 6, TRIANGLE_RADIUS_IN, [1, 2, 4]);
-
 export class EtratGrid extends AbstractGrid {
 	DIRECTIONS = [EAST, NORTH, WEST, SOUTH];
 	EDGEMARK_DIRECTIONS = [NORTH, WEST];
@@ -225,3 +221,7 @@ export class EtratGrid extends AbstractGrid {
 		return visibleTiles;
 	}
 }
+
+const SQUARE = new RegularPolygonTile(4, 0, 0.5, EtratGrid.getGridFlag('CLIP_TILE_POLYGON'));
+const UPTRIANGLE = new RegularPolygonTile(3, Math.PI / 6, TRIANGLE_RADIUS_IN, EtratGrid.getGridFlag('CLIP_TILE_POLYGON'), [1, 4, 8]);
+const DOWNTRIANGLE = new RegularPolygonTile(3, -Math.PI / 6, TRIANGLE_RADIUS_IN, EtratGrid.getGridFlag('CLIP_TILE_POLYGON'), [1, 2, 4]);

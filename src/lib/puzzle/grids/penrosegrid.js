@@ -41,6 +41,7 @@ function calculateBaseTransformedPolygons() {
 		(TAU * 3) / 10,
 		0
 	];
+	const clip_tile_path = PenroseGrid.getGridFlag('CLIP_TILE_POLYGON');
 	for (var i = 0; i < 20; i++) {
 		var scale_y, skew_x;
 		if (i % 10 < 5) {
@@ -57,6 +58,7 @@ function calculateBaseTransformedPolygons() {
 				num_directions,
 				angle_offset,
 				radius_in,
+				clip_tile_path,
 				directions,
 				border_width,
 				scale_x,
@@ -70,8 +72,6 @@ function calculateBaseTransformedPolygons() {
 	}
 	return ret;
 }
-
-const BASE_RHOMBS = calculateBaseTransformedPolygons();
 
 /**
  * Stacked cubes grid
@@ -173,8 +173,10 @@ export class PenroseGrid extends AbstractGrid {
 	 * Queries if a feature flag is enabled for this grid
 	 * @param {String} flagName
 	 */
-	getGridFlag(flagName) {
-		return flagName == 'ARMS_ROTATION';
+	static getGridFlag(flagName) {
+		return super.getGridFlag(flagName) ||
+			flagName == 'ARMS_ROTATION' ||
+			flagName == 'CLIP_TILE_POLYGON';
 	}
 	
 
@@ -391,3 +393,5 @@ export class PenroseGrid extends AbstractGrid {
 		return [0.8 * dx, 0.8 * dy];
 	}
 }
+
+const BASE_RHOMBS = calculateBaseTransformedPolygons();

@@ -15,8 +15,6 @@ const R0 = 0.49;
 const d = Roct * Math.sin(Math.PI / 8);
 const d0 = R0 * Math.sin(Math.PI / 8);
 const Rsq = ((Roct - d) * Math.SQRT2) / 2;
-const OCTAGON = new RegularPolygonTile(8, 0, 0.5);
-const SQUARE = new RegularPolygonTile(4, Math.PI / 4, Rsq, [2, 8, 32, 128]);
 
 /**
  * Octagonal grid
@@ -402,3 +400,6 @@ export class OctaGrid extends AbstractGrid {
 		}
 	}
 }
+
+const OCTAGON = new RegularPolygonTile(8, 0, 0.5, OctaGrid.getGridFlag('CLIP_TILE_POLYGON'));
+const SQUARE = new RegularPolygonTile(4, Math.PI / 4, Rsq, OctaGrid.getGridFlag('CLIP_TILE_POLYGON'), [2, 8, 32, 128]);

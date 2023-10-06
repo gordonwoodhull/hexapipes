@@ -10,8 +10,6 @@ export const SOUTHEAST = 32;
 
 const YSTEP = Math.sqrt(3) / 2;
 
-const HEXAGON = new RegularPolygonTile(6, 0, 0.5);
-
 /**
  * Hexagonal grid
  * @extends AbstractGrid
@@ -382,3 +380,5 @@ export class HexaGrid extends AbstractGrid {
 		}
 	}
 }
+
+const HEXAGON = new RegularPolygonTile(6, 0, 0.5, HexaGrid.getGridFlag('CLIP_TILE_POLYGON'));

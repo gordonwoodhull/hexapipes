@@ -12,6 +12,7 @@
 
 	const outlineWidth = grid.STROKE_WIDTH * 2 + grid.PIPE_WIDTH;
 	const pipeWidth = grid.PIPE_WIDTH;
+	const clip_path = grid.constructor.getGridFlag('CLIP_TILE_POLYGON') ? `url(#${[grid.KIND, 'clip', 'path', i].join('-')})` : null;
 
 	let path = grid.getPipesPath(tile, i);
 	const isSink = grid.getDirections(tile, 0, i).length === 1;
@@ -34,7 +35,7 @@
 	<g
 		class="pipe"
 		style="transform: {tile_transform}"
-		clip-path="url(#{[grid.KIND, 'clip', 'path', i].join('-')})"
+		clip-path={clip_path}
 	>
 		<!-- Pipe outline -->
 		<path

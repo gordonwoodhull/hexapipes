@@ -9,55 +9,6 @@ const DIRD = 8;
 
 const SCALE = 1.5; // cube (x, y) = SCALE * hexagon (x, y)
 
-const RIGHT_FACE = new TransformedPolygonTile(
-	4,
-	0,
-	0.5 * SCALE,
-	[],
-	0.01,
-	1 / Math.sqrt(3),
-	0.5,
-	Math.PI / 6,
-	0,
-	-Math.PI / 2,
-	'filter: brightness(0.96)'
-);
-const TOP_FACE = new TransformedPolygonTile(
-	4,
-	0,
-	0.5 * SCALE,
-	[],
-	0.01,
-	1 / Math.sqrt(3),
-	0.5,
-	Math.PI / 6,
-	0,
-	(5 * Math.PI) / 6,
-	'filter: brightness(1.04)'
-);
-const LEFT_FACE = new TransformedPolygonTile(
-	4,
-	0,
-	0.5 * SCALE,
-	[],
-	0.01,
-	1 / Math.sqrt(3),
-	0.5,
-	Math.PI / 6,
-	0,
-	Math.PI / 6,
-	null
-);
-
-const FACES = [RIGHT_FACE, TOP_FACE, LEFT_FACE];
-const RHOMB_ANGLES = [-Math.PI / 6, Math.PI / 2, (-Math.PI * 5) / 6];
-const RHOMB_OFFSETS = RHOMB_ANGLES.map((angle) => {
-	return {
-		dx: (SCALE * Math.cos(angle) * Math.sqrt(3)) / 6,
-		dy: (-SCALE * Math.sin(angle) * Math.sqrt(3)) / 6
-	};
-});
-
 /**
  * Stacked cubes grid
  * @extends AbstractGrid
@@ -294,3 +245,56 @@ export class CubeGrid extends AbstractGrid {
 		});
 	}
 }
+
+
+const RIGHT_FACE = new TransformedPolygonTile(
+	4,
+	0,
+	0.5 * SCALE,
+	CubeGrid.getGridFlag('CLIP_TILE_POLYGON'),
+	[],
+	0.01,
+	1 / Math.sqrt(3),
+	0.5,
+	Math.PI / 6,
+	0,
+	-Math.PI / 2,
+	'filter: brightness(0.96)'
+);
+const TOP_FACE = new TransformedPolygonTile(
+	4,
+	0,
+	0.5 * SCALE,
+	CubeGrid.getGridFlag('CLIP_TILE_POLYGON'),
+	[],
+	0.01,
+	1 / Math.sqrt(3),
+	0.5,
+	Math.PI / 6,
+	0,
+	(5 * Math.PI) / 6,
+	'filter: brightness(1.04)'
+);
+const LEFT_FACE = new TransformedPolygonTile(
+	4,
+	0,
+	0.5 * SCALE,
+	CubeGrid.getGridFlag('CLIP_TILE_POLYGON'),
+	[],
+	0.01,
+	1 / Math.sqrt(3),
+	0.5,
+	Math.PI / 6,
+	0,
+	Math.PI / 6,
+	null
+);
+
+const FACES = [RIGHT_FACE, TOP_FACE, LEFT_FACE];
+const RHOMB_ANGLES = [-Math.PI / 6, Math.PI / 2, (-Math.PI * 5) / 6];
+const RHOMB_OFFSETS = RHOMB_ANGLES.map((angle) => {
+	return {
+		dx: (SCALE * Math.cos(angle) * Math.sqrt(3)) / 6,
+		dy: (-SCALE * Math.sin(angle) * Math.sqrt(3)) / 6
+	};
+});
