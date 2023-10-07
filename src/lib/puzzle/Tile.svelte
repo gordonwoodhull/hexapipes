@@ -34,6 +34,7 @@
 	const isSink = myDirections.length === 1;
 
 	const tile_transform = game.grid.getTileTransformCSS(i) || '';
+	const pipe_transform = useArmsRotation ? '' : tile_transform;
 	let pipe_rotate = '';
 	/**
 	 * Choose tile background color
@@ -76,7 +77,7 @@
 	/>
 
 	<!-- Pipe shape -->
-	<g class="pipe" class:tileRotation={!useArmsRotation} style="transform: {pipe_rotate}" clip-path="url(#clip-path-{i})">
+	<g class="pipe" class:tileRotation={!useArmsRotation} style="transform: {pipe_transform} {pipe_rotate}" clip-path="url(#clip-path-{i})">
 		<!-- Pipe outline -->
 		<path
 			d={path}
