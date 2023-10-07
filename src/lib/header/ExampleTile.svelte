@@ -12,11 +12,13 @@
 
 	const outlineWidth = grid.STROKE_WIDTH * 2 + grid.PIPE_WIDTH;
 	const pipeWidth = grid.PIPE_WIDTH;
+	const useArmsRotation = grid.getGridFlag('ARMS_ROTATION');
 
-	let path = grid.getPipesPath(tile, i);
+	let path = grid.getPipesPath(tile, i, 0);
 	const isSink = grid.getDirections(tile, 0, i).length === 1;
 
 	const tile_transform = grid.getTileTransformCSS(i) || '';
+	const pipe_transform = useArmsRotation ? '' : tile_transform;
 	const style = grid.polygon_at(i).style || undefined;
 </script>
 
@@ -33,7 +35,7 @@
 	<!-- Pipe shape -->
 	<g
 		class="pipe"
-		style="transform: {tile_transform}"
+		style="transform: {pipe_transform}"
 		clip-path="url(#{[grid.KIND, 'clip', 'path', i].join('-')})"
 	>
 		<!-- Pipe outline -->
