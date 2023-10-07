@@ -250,7 +250,6 @@ export class PenroseGrid extends AbstractGrid {
 				} else {
 					path = points.map((p, i) => `L ${p.x} ${p.y}`).join(' ');
 				}
-				console.log('gpp', path);
 				return path;
 			})
 		]
