@@ -146,12 +146,12 @@
 			if (instance !== null) {
 				let gridState;
 				({ grid: gridState, tiles } = JSON.parse(instance));
+				if (grid.initialize) grid.initialize(gridState);
 				// if the grid was refactored and handles size differently
 				// then ignore the previously saved instance
 				if (tiles.length !== grid.total) {
 					tiles = [];
 				}
-				if (grid.initialize) grid.initialize(gridState);
 			}
 		}
 		solved = false;
