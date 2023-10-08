@@ -194,27 +194,23 @@ export class PenroseGrid extends AbstractGrid {
 	}
 
 	getPipesPath(tile, index, rotations) {
-		let directions = this.DIRECTIONS;
-		rotations = rotations % directions.length;
-		if (rotations < 0) {
-			directions = [...directions.slice(rotations), ...directions.slice(0, rotations)];
-		} else if (rotations > 0) {
-			directions = [...directions.slice(-rotations), ...directions.slice(0, -rotations)];
-		}
+		rotations = rotations % this.NUM_DIRECTIONS;
+		const directions = [...this.DIRECTIONS.slice(-rotations), ...this.DIRECTIONS.slice(0, -rotations)];
 		const symbol_portion = 0.7;
 		let bezier = true;
 		if (symbol_portion > 1) bezier = false;
 		tile = this.polygon_at(index).rotate(tile, rotations);
 		const { center } = this.p3rhombs[index];
 		const { direction_to_index } = this.polygon_at(index);
+		while(rotations < 0) rotations += directions.length;
 		return [
 			`M 0 0`,
 			...directions.map((direction) => {
 				if ((direction & tile) === 0) return null;
 				// use the rotated direction for geometry
+
 				let dirind = direction_to_index.get(direction);
-				dirind = (dirind + rotations) % 4;
-				while (dirind < 0) dirind += 4;
+				dirind = (dirind + rotations) % this.NUM_DIRECTIONS;
 				direction = directions[dirind];
 				const { neighbour, oppositeDirection } = this.find_neighbour(index, direction);
 				const A = this.getTileSymbolEnd(index, direction, symbol_portion);
