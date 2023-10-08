@@ -35,7 +35,7 @@
 
 	const tile_transform = game.grid.getTileTransformCSS(i) || '';
 	const pipe_transform = useArmsRotation ? '' : tile_transform;
-	let pipe_rotate = '';
+	let pipe_rotate = '', dot_transform = '';
 	/**
 	 * Choose tile background color
 	 * @param {Boolean} locked
@@ -61,6 +61,7 @@
 	}
 	$: path = game.grid.getPipesPath($state.tile, i, $state.rotations);
 	$: pipe_rotate = useArmsRotation ? '' : `rotate(${game.grid.getAngle($state.rotations, i)}rad)`;
+	$: dot_transform = useArmsRotation ? `${tile_transform} rotate(${game.grid.getAngle($state.rotations, i)}rad)` : '';
 	$: chooseBgColor($state.locked, $state.isPartOfLoop);
 	$: outlineWidth = 2 * strokeWidth + game.grid.PIPE_WIDTH;
 	$: style = game.grid.polygon_at(i).style || undefined;
@@ -118,6 +119,7 @@
 				stroke="white"
 				r={guideDotRadius}
 				stroke-width="0.01"
+				style="transform: {dot_transform}"
 			/>
 		{/if}
 	</g>
