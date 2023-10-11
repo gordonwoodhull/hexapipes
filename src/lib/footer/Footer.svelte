@@ -1,11 +1,14 @@
 <div class="footer">
-	Created by @gereleth. Source code: <a
+	Created by <a target="_blank" rel="noreferrer" href="https://twitter.com/gereleth">@gereleth</a>. Source code: <a
 		target="_blank"
 		rel="noreferrer"
 		href="https://github.com/gereleth/hexapipes">GitHub</a
 	><br />
-	Say hi to me on
-	<a target="_blank" rel="noreferrer" href="https://twitter.com/gereleth">Twitter</a>
+	Penrose Pipes fork by <a target="_blank" rel="noreferrer" href="https://twitter.com/gordonwoodhull">@gordonwoodhull</a>. Source code: <a
+		target="_blank"
+		rel="noreferrer"
+		href="https://github.com/gordonwoodhull/hexapipes">GitHub</a
+	><br />
 </div>
 
 <style>
