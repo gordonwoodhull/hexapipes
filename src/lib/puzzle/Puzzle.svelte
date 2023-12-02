@@ -43,6 +43,7 @@
 
 	export const startOver = function () {
 		game.startOver();
+		game.recording = [];
 	};
 
 	export const reportPxPerCell = function () {
@@ -170,7 +171,8 @@
 		dispatch('progress', {
 			name: myProgressName,
 			data: {
-				tiles: tileStates
+				tiles: tileStates,
+				recording: game.recording
 			}
 		});
 	}

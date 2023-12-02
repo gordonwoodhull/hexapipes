@@ -42,6 +42,7 @@ import { createViewBox } from './viewbox';
  * Saved progress for pipes puzzle
  * @typedef {Object} Progress
  * @property {SavedTileState[]} tiles
+ * @property {Object[]} recording
  */
 
 /**
@@ -127,7 +128,7 @@ export function PipesGame(grid, tiles, savedProgress) {
 	self.solved = writable(false);
 	self.viewBox = createViewBox(grid);
 	self.record = true;
-	self.recording = [];
+	self.recording = savedProgress && savedProgress.recording || [];
 
 	/**
 	 * @type {Map<Number, Set<Number>>} - a map of
@@ -733,13 +734,13 @@ export function PipesGame(grid, tiles, savedProgress) {
 	 * @param {boolean} assistant
 	 * @returns {boolean} - new locked value
 	 */
-	self.toggleLocked = function (tileIndex, state = undefined, assistant = false) {
+	self.toggleLocked = function (tileIndex, state = null, assistant = false) {
 		const tileState = self.tileStates[tileIndex];
 		let targetState = false;
 		if (self.record) {
 			self.recording.push({action: 'toggleLocked', args: [tileIndex, state, assistant]});
 		}
-		if (state === undefined) {
+		if (state === null) {
 			targetState = !tileState.data.locked;
 		} else {
 			targetState = state;
