@@ -13,6 +13,10 @@
 		}
 	}
 
+	function replay() {
+		dispatch('replay')
+	}
+
 	function newPuzzle() {
 		if (solved || window.confirm('Skip this puzzle and start a new one?')) {
 			dispatch('newPuzzle');
@@ -24,6 +28,8 @@
 <div class="buttons">
 	<!-- Start over button-->
 	<button on:click={startOver}> 🔁 Start over </button>
+	<!-- Replay button-->
+	<button on:click={replay}> Replay </button>
 	<!-- Settings button -->
 	<button on:click={() => (showSettings = !showSettings)}> ⚙️ Settings </button>
 	<!-- New puzzle button -->

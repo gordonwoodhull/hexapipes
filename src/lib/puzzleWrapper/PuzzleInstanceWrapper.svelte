@@ -67,6 +67,10 @@
 		puzzle.startOver();
 	}
 
+	function replay() {
+		puzzle.replay();
+	}
+
 	function start() {
 		solve = solves.reportStart(puzzleId);
 	}
@@ -224,6 +228,7 @@
 	<PuzzleButtons
 		solved={solve.elapsedTime !== -1}
 		on:startOver={startOver}
+		on:replay={replay}
 		on:newPuzzle={newPuzzle}
 		on:download={puzzle.download}
 	/>

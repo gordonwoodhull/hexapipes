@@ -229,6 +229,21 @@
 		}
 	}
 
+
+
+	export async function replay () {
+		game.startOver()
+		await sleep(500);
+		game.record = false;
+		for (let {action, args} of game.recording) {
+			game[action].apply(game, args);
+			await sleep(500);
+		}
+		game.record = true;
+	}
+
+
+
 	let steps = -1;
 	let ms = -1;
 	/** @type {Number[]}*/

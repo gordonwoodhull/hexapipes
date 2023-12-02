@@ -119,12 +119,15 @@ function StateStore(initialState) {
 export function PipesGame(grid, tiles, savedProgress) {
 	let self = this;
 
+
 	self.grid = grid;
 	self.tiles = tiles;
 	self.initialized = false;
 	self._solved = false;
 	self.solved = writable(false);
 	self.viewBox = createViewBox(grid);
+	self.record = true;
+	self.recording = [];
 
 	/**
 	 * @type {Map<Number, Set<Number>>} - a map of
@@ -327,6 +330,9 @@ export function PipesGame(grid, tiles, savedProgress) {
 		if (self._solved || times === 0) {
 			return;
 		}
+		if (self.record) {
+			self.recording.push({action: 'rotateTile', args: [tileIndex, times]});
+		}
 		const tileState = self.tileStates[tileIndex];
 		if (tileState === undefined || tileState.data.locked) {
 			return;
@@ -399,6 +405,9 @@ export function PipesGame(grid, tiles, savedProgress) {
 			}
 			return;
 		}
+		if (self.record) {
+			self.recording.push({action: 'toggleEdgeMark', args: [mark, tileIndex, direction, assistant]});
+		}
 		const tileState = self.tileStates[tileIndex];
 		if (tileState.data.edgeMarks[index] === mark) {
 			tileState.data.edgeMarks[index] = 'empty';
@@ -407,8 +416,11 @@ export function PipesGame(grid, tiles, savedProgress) {
 		}
 		tileState.set(tileState.data);
 		if (tileState.data.edgeMarks[index] !== 'empty' && assistant) {
+			const wasRecord = self.record;
+			self.record = false;
 			self.rotateToMatchMarks(tileIndex);
 			self.rotateToMatchMarks(neighbour);
+			self.record = wasRecord;
 		}
 	};
 
@@ -724,6 +736,9 @@ export function PipesGame(grid, tiles, savedProgress) {
 	self.toggleLocked = function (tileIndex, state = undefined, assistant = false) {
 		const tileState = self.tileStates[tileIndex];
 		let targetState = false;
+		if (self.record) {
+			self.recording.push({action: 'toggleLocked', args: [tileIndex, state, assistant]});
+		}
 		if (state === undefined) {
 			targetState = !tileState.data.locked;
 		} else {
@@ -733,6 +748,8 @@ export function PipesGame(grid, tiles, savedProgress) {
 			tileState.toggleLocked();
 		}
 		if (targetState && assistant) {
+			const wasRecord = self.record;
+			self.record = false;
 			for (let direction of self.grid.polygon_at(tileIndex).directions) {
 				const { neighbour, empty } = self.grid.find_neighbour(tileIndex, direction);
 				if (empty) {
@@ -740,6 +757,7 @@ export function PipesGame(grid, tiles, savedProgress) {
 				}
 				self.rotateToMatchMarks(neighbour);
 			}
+			self.record = wasRecord;
 		}
 		return targetState;
 	};
