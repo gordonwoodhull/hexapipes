@@ -156,7 +156,6 @@
 	details {
 		width: max-content;
 		max-width: 99vw;
-		margin-bottom: 100px;
 	}
 	details summary {
 		cursor: pointer;

@@ -4,7 +4,7 @@
 		rel="noreferrer"
 		href="https://github.com/gereleth/hexapipes">GitHub</a
 	><br />
-	Penrose Pipes fork by <a target="_blank" rel="noreferrer" href="https://twitter.com/gordonwoodhull">@gordonwoodhull</a>. Source code: <a
+	Penrose by <a target="_blank" rel="noreferrer" href="https://twitter.com/gordonwoodhull">@gordonwoodhull</a>. Source code: <a
 		target="_blank"
 		rel="noreferrer"
 		href="https://github.com/gordonwoodhull/hexapipes">GitHub</a
@@ -14,7 +14,6 @@
 <style>
 	.footer {
 		color: #888;
-		margin: 3em 0;
 		text-align: center;
 	}
 	a {

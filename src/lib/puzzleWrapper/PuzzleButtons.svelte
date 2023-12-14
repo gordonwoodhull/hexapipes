@@ -23,17 +23,15 @@
 
 <div class="buttons">
 	<!-- Start over button-->
-	<button on:click={startOver}> 🔁 Start over </button>
+	<button on:click={startOver}> 🔁 </button>
 	<!-- Settings button -->
-	<button on:click={() => (showSettings = !showSettings)}> ⚙️ Settings </button>
+	<button on:click={() => (showSettings = !showSettings)}> ⚙️ </button>
 	<!-- New puzzle button -->
 	{#if includeNewPuzzleButton}
-		<button on:click={newPuzzle}> ➡️ New puzzle </button>
+		<button on:click={newPuzzle}> ➡️ </button>
 	{/if}
-</div>
-<div class="buttons secondary">
 	<!-- Download button -->
-	<button on:click={() => dispatch('download')}> ⬇️ Download this puzzle</button>
+	<button on:click={() => dispatch('download')}> ⬇️ </button>
 </div>
 
 {#if showSettings}
@@ -45,7 +43,6 @@
 		display: flex;
 		justify-content: center;
 		column-gap: 1em;
-		margin-bottom: 1em;
 		flex-wrap: wrap;
 		row-gap: 1em;
 	}

@@ -57,8 +57,3 @@
 	/>
 {/if}
 
-{#if stats}
-	<div class="stats">
-		<Stats {stats} />
-	</div>
-{/if}

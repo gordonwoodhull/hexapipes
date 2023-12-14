@@ -246,7 +246,6 @@
 <style>
 	.congrat {
 		margin: auto;
-		margin-bottom: 20px;
 		font-size: 150%;
 		color: var(--primary-color);
 		text-align: center;
