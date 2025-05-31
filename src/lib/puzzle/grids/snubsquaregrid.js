@@ -156,29 +156,31 @@ export class SnubSquareGrid extends AbstractGrid {
 	 * Helper method for find_neighbour
 	 * @param {number} squareIndex
 	 * @param {number} unitIndex
-	 * @param {number} direction=0
-	 * @returns
+	 * @param {boolean} sameUnit
+	 * @param {number} direction
+	 * @returns {{neighbour: Number, empty: boolean, oppositeDirection: Number}}
 	 */
-	_calc_neighbour(squareIndex, unitIndex, direction = 0) {
-		if (direction == 0) {
+	_calc_neighbour(squareIndex, unitIndex, sameUnit, direction) {
+		const oppositeDirection = this.OPPOSITE.get(direction) || 0;
+		if (sameUnit) {
 			// stayed in the same unit
 			const neighbour = 6 * squareIndex + unitIndex;
 			const empty = this.emptyCells.has(neighbour);
-			return { neighbour, empty };
+			return { neighbour, empty, oppositeDirection };
 		} else {
 			const square_neighbour = this.squaregrid.find_neighbour(squareIndex, direction);
 			if (square_neighbour.empty) {
-				return { neighbour: -1, empty: true };
+				return { neighbour: -1, empty: true, oppositeDirection };
 			}
 			const neighbour = 6 * square_neighbour.neighbour + unitIndex;
 			const empty = this.emptyCells.has(neighbour);
-			return { neighbour, empty };
+			return { neighbour, empty, oppositeDirection };
 		}
 	}
 	/**
 	 * @param {Number} index
 	 * @param {Number} direction
-	 * @returns {{neighbour: Number, empty: boolean}} - neighbour index, is the neighbour an empty cell or outside the board
+	 * @returns {{neighbour: Number, empty: boolean, oppositeDirection: Number}} - neighbour index, is the neighbour an empty cell or outside the board
 	 */
 	find_neighbour(index, direction) {
 		const squareIndex = Math.floor(index / 6);
@@ -186,60 +188,60 @@ export class SnubSquareGrid extends AbstractGrid {
 		if (unitIndex === 0) {
 			// square_0
 			if (direction === EAST) {
-				return this._calc_neighbour(squareIndex, 1);
+				return this._calc_neighbour(squareIndex, 1, true, direction);
 			} else if (direction === SOUTH) {
-				return this._calc_neighbour(squareIndex, 4);
+				return this._calc_neighbour(squareIndex, 4, true, direction);
 			} else if (direction === NORTH) {
-				return this._calc_neighbour(squareIndex, 5, direction);
+				return this._calc_neighbour(squareIndex, 5, false, direction);
 			} else {
-				return this._calc_neighbour(squareIndex, 2, direction);
+				return this._calc_neighbour(squareIndex, 2, false, direction);
 			}
 		} else if (unitIndex === 1) {
 			// triangle_1
 			if (direction === EAST) {
-				return this._calc_neighbour(squareIndex, 2);
+				return this._calc_neighbour(squareIndex, 2, true, direction);
 			} else if (direction === NORTH) {
-				return this._calc_neighbour(squareIndex, 3, direction);
+				return this._calc_neighbour(squareIndex, 3, false, direction);
 			} else {
-				return this._calc_neighbour(squareIndex, 0);
+				return this._calc_neighbour(squareIndex, 0, true, direction);
 			}
 		} else if (unitIndex === 2) {
 			// triangle_2
 			if (direction === EAST) {
-				return this._calc_neighbour(squareIndex, 0, direction);
+				return this._calc_neighbour(squareIndex, 0, false, direction);
 			} else if (direction === WEST) {
-				return this._calc_neighbour(squareIndex, 1);
+				return this._calc_neighbour(squareIndex, 1, true, direction);
 			} else {
-				return this._calc_neighbour(squareIndex, 3);
+				return this._calc_neighbour(squareIndex, 3, true, direction);
 			}
 		} else if (unitIndex === 3) {
 			// square_3
 			if (direction === EAST) {
-				return this._calc_neighbour(squareIndex, 5, direction);
+				return this._calc_neighbour(squareIndex, 5, false, direction);
 			} else if (direction === NORTH) {
-				return this._calc_neighbour(squareIndex, 2);
+				return this._calc_neighbour(squareIndex, 2, true, direction);
 			} else if (direction === WEST) {
-				return this._calc_neighbour(squareIndex, 4);
+				return this._calc_neighbour(squareIndex, 4, true, direction);
 			} else {
-				return this._calc_neighbour(squareIndex, 1, direction);
+				return this._calc_neighbour(squareIndex, 1, false, direction);
 			}
 		} else if (unitIndex === 4) {
 			// triangle_4
 			if (direction === EAST) {
-				return this._calc_neighbour(squareIndex, 3);
+				return this._calc_neighbour(squareIndex, 3, true, direction);
 			} else if (direction === NORTH) {
-				return this._calc_neighbour(squareIndex, 0);
+				return this._calc_neighbour(squareIndex, 0, true, direction);
 			} else {
-				return this._calc_neighbour(squareIndex, 5);
+				return this._calc_neighbour(squareIndex, 5, true, direction);
 			}
 		} else {
 			// triangle_5
 			if (direction === EAST) {
-				return this._calc_neighbour(squareIndex, 4);
+				return this._calc_neighbour(squareIndex, 4, true, direction);
 			} else if (direction === WEST) {
-				return this._calc_neighbour(squareIndex, 3, direction);
+				return this._calc_neighbour(squareIndex, 3, false, direction);
 			} else {
-				return this._calc_neighbour(squareIndex, 0, direction);
+				return this._calc_neighbour(squareIndex, 0, false, direction);
 			}
 		}
 	}
