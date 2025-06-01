@@ -416,6 +416,7 @@ function averageOfArray(arr) {
 export function _calculateStats(solves, isDaily) {
 	let streak = 0;
 	let totalSolved = 0;
+	let percentSolved = 0;
 	let streakIncrement = 1;
 	const startIndex = solves.length > 0 && solves[0].elapsedTime === -1 ? 1 : 0;
 	let currentTime = null;
@@ -486,6 +487,9 @@ export function _calculateStats(solves, isDaily) {
 			bestAverageOf12 = Math.min(averageOfArray(ts), bestAverageOf12);
 		}
 	}
+	if (solves.length) {
+		percentSolved = Math.floor(100 * totalSolved / solves.length);
+	}
 	if (currentTime === null) {
 		currentTime = Number.POSITIVE_INFINITY;
 	}
@@ -501,6 +505,7 @@ export function _calculateStats(solves, isDaily) {
 	return {
 		streak,
 		totalSolved,
+		percentSolved,
 		currentTime,
 		bestTime,
 		meanOf3,
@@ -524,6 +529,7 @@ function createStatsStore(path) {
 	const data = {
 		streak: 0,
 		totalSolved: 0,
+		percentSolved: 0,
 		single: {
 			current: Number.POSITIVE_INFINITY,
 			best: Number.POSITIVE_INFINITY,
@@ -553,6 +559,7 @@ function createStatsStore(path) {
 			const newStats = _calculateStats(solves, isDaily);
 			data.streak = newStats.streak;
 			data.totalSolved = newStats.totalSolved;
+			data.percentSolved = newStats.percentSolved;
 			data.single = {
 				current: newStats.currentTime,
 				best: newStats.bestTime,

@@ -78,7 +78,7 @@
 		<div class="details">
 			<details>
 				<summary>Solve stats</summary>
-				<p>Total puzzles solved: {$stats.totalSolved} ({$stats.streak} in a row)</p>
+				<p>Total puzzles solved: {$stats.totalSolved} ({$stats.percentSolved}%, {$stats.streak} in a row)</p>
 				<table>
 					<thead>
 						<tr>
